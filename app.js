@@ -7,6 +7,8 @@ app.use(express.static("public")); // access images, css, js
 const Customer = require('./models/customer');
 // const MongoClient = require("mongodb").MongoClient;
 
+let currentUser;
+
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -45,9 +47,31 @@ app.get("/single-customer", (req, res) => {
     res.send(result);
   }).catch((err) => {
     console.log(err);
-  })
+  });
 })
 
+app.get("/customer-firstname", (req, res) => {
+  Customer.findOne({ firstName: "Eduardo" }).then((result) => {
+    res.send(result);
+    console.log(result);
+    currentUser = result;
+    getName(result);
+    getPass(result);
+    console.log(currentUser.firstName);
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  
+});
+
+function getName(result) {
+  console.log(result.lastName);
+}
+
+function getPass(result) {
+  console.log(result.password);
+}
 
 app.get("/", function(req, res){
     // res.render("index.ejs");
