@@ -1,0 +1,31 @@
+<% include partials/header.ejs %>
+
+    <body>
+        <header>
+            <h1> <%=Title%> </h1>
+        </header>
+        <% include partials/nav.ejs %>
+        <main>
+            <figure>
+                <img id="first" src="img/malware.jpg" alt="Malware picture" width="600" height="500">
+            </figure>
+            <div id="malware">
+                <h2> <%=SubTitle%> </h2>
+                <p> Malware is a term used to describe software whose purpose is to harm systems.
+                    Malware exists to make money off the information that it encrypts, deletes, or hijacks.</p>
+                <p>Some signs of Malware in your system:</p>
+                <ul>
+                    <li>Your computer slows down</li>
+                    <li>Unexpected pop-ups</li>
+                    <li>Unexpected crashes, BSOD</li>
+                    <li>Unwanted software that was downloaded without your permission</li>
+                </ul>
+                <p> The easiest way to obtain malware is through downloading anything and/or opening email. 
+                    Which mostly happen through <strong>YOUR</strong> actions!</p>
+                <p>In the follwing three web pages, I will provide a summary for two types of attacks that fall under malware. As well as provide a summary of a recent event involving malware.</p>
+                <p>If you want to learn more, go to this website <a href="https://www.malwarebytes.com/malware/">here</a>!</p>
+            </div>
+        </main>
+        <% include partials/footer.ejs %>
+    </body>
+</html>

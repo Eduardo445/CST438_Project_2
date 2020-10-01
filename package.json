@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "project2",
   "version": "0.0.0",
@@ -17,3 +18,32 @@
     "stylus": "0.54.5"
   }
 }
+=======
+{
+  "name": "cst438_project_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eduardo445/CST438_Project_2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eduardo445/CST438_Project_2/issues"
+  },
+  "homepage": "https://github.com/Eduardo445/CST438_Project_2#readme",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.7",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {}
+}
+>>>>>>> Eduardo
