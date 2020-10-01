@@ -51,7 +51,34 @@ app.get("/single-customer", (req, res) => {
 
 app.get("/", function(req, res){
     // res.render("index.ejs");
-    res.send("It works!");
+    res.render("profile", {
+      "Title": "Testing"
+    });
+});//root
+
+app.get("/login", function(req, res){
+  // res.render("index.ejs");
+  res.send("It works adware!");
+});//root
+
+app.get("/sign", function(req, res){
+  // res.render("index.ejs");
+  res.send("It works ransom!");
+});//root
+
+app.get("/shop", function(req, res){
+  // res.render("index.ejs");
+  res.send("It works recent!");
+});//root
+
+app.get("/cart", function(req, res){
+  // res.render("index.ejs");
+  res.send("It works recent!");
+});//root
+
+app.get("/profile", function(req, res){
+  // res.render("index.ejs");
+  res.send("It works recent!");
 });//root
 
 //running server
