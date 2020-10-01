@@ -4,13 +4,62 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public")); // access images, css, js
 
+const Customer = require('./models/customer');
 // const MongoClient = require("mongodb").MongoClient;
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((result) => console.log('connected to db'))
+    .then((result) => app.listen(3000, function() {
+      console.log("Express server is running...");
+    }))
     .catch((err) => console.log(err));
+
+app.get("/add-customer", (req, res) => {
+
+  const customer = new Customer({
+    firstName: 'Eduardos',
+    lastName:  "Soto",
+    username:  "Test",
+    password:  "count#"
+  });
+
+  customer.save().then((result) => {
+    res.send(result);
+  }).catch((err) => {
+    console.log(err);
+  });
+
+})
+
+app.get("/all-customers", (req, res) => {
+  Customer.find().then((result) => {
+    res.send(result);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+app.get("/single-customer", (req, res) => {
+  Customer.findById("5f755cafa0381c467432605b").then((result) => {
+    res.send(result);
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+
+
+app.get("/", function(req, res){
+    // res.render("index.ejs");
+    res.send("It works!");
+});//root
+
+//running server
+// app.listen(3000, function(){
+//   console.log("Express server is running...");
+// });
+
+// -----------------------------------
 
 // const client = new MongoClient(process.env.ATLAS_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -49,13 +98,3 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 // })();
 
 // const request = require('request');
-
-app.get("/", function(req, res){
-    // res.render("index.ejs");
-    res.send("It works!");
-});//root
-
-//running server
-app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("Express server is running...");
-});
