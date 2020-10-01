@@ -1,0 +1,141 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+h1 {
+    font-size: 4em;
+    margin-bottom: 0px;
+    font-family: 'Oswald', sans-serif;
+}
+
+h1:hover {
+    color: red;
+}
+
+h2 {
+    font-family: 'Oswald', sans-serif;
+}
+
+h2:hover {
+    color: red;
+}
+
+header, figure, nav, footer {
+    text-align: center;
+}
+
+nav a {
+    padding: 10px;
+    padding-bottom: 3px;
+    font-size: 1.5em;
+    text-decoration: none;
+    color: white;
+}
+
+nav a:hover {
+    border-bottom: 2px red solid;
+    font-size: 2em;
+    transition: .9s;
+    color: red;
+}
+
+footer {
+    font-size: .75em;
+    color: white;
+    
+}
+
+#malware {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+}
+
+#adware {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+}
+
+#ransom {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+}
+
+#newsOne {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+}
+
+#newsTwo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 30em;
+}
+
+img {
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+}
+
+#first {
+    outline-width: .5vw;
+    outline-style: inset;
+    outline-color: green;
+    border: 1vw solid red;
+}
+
+#second {
+    outline-width: .5vw;
+    outline-style: groove;
+    outline-color: cyan;
+    border: 1vw solid orange;
+}
+
+#third {
+    outline-width: .5vw;
+    outline-style: dashed;
+    outline-color: purple;
+    border: 1vw solid yellow;
+}
+
+#fourth {
+    outline-width: .5vw;
+    outline-style: ridge;
+    outline-color: gold;
+    border: 1vw solid silver;
+}
+
+#fifth {
+    outline-width: .5vw;
+    outline-style: dotted;
+    outline-color: lightyellow;
+    border: 1vw solid purple;
+}
+
+ul {
+    color: red;
+}
+
+#fakerPerson {
+    display: flex;
+    justify-content: center;
+    font-family: 'Fantasy', fantasy;
+    font-size: 2ex;
+}
+
+#wanted {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+}
+
+#disclaimer {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75ex;
+}
