@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,10 +18,13 @@
   },
   "homepage": "https://github.com/Eduardo445/CST438_Project_2#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.5",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.7",
+    "morgan": "^1.10.0",
+    "node": "^14.13.0",
     "nodemon": "^2.0.4"
   },
   "devDependencies": {}

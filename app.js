@@ -1,8 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose");
+const { clear } = require('console');
+const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
-app.set("view engine", "ejs");
-app.use(express.static("public")); // access images, css, js
+app.set('view engine', 'ejs');
+app.use(express.static('public')); // access images, css, js
 
 const Customer = require('./models/customer');
 // const MongoClient = require("mongodb").MongoClient;
@@ -10,59 +11,68 @@ const Customer = require('./models/customer');
 let currentUser;
 
 // Connect to mongodb
-const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((result) => app.listen(3000, function() {
-      console.log("Express server is running...");
-    }))
-    .catch((err) => console.log(err));
+const uri =
+  'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
+mongoose
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) =>
+    app.listen(3000, function () {
+      console.log('Express server is running...');
+    })
+  )
+  .catch((err) => console.log(err));
 
-app.get("/add-customer", (req, res) => {
-
+app.get('/add-customer', (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
-    lastName:  "Soto",
-    username:  "Test",
-    password:  "count#"
+    lastName: 'Soto',
+    username: 'Test',
+    password: 'count#',
   });
 
-  customer.save().then((result) => {
-    res.send(result);
-  }).catch((err) => {
-    console.log(err);
-  });
-
-})
-
-app.get("/all-customers", (req, res) => {
-  Customer.find().then((result) => {
-    res.send(result);
-  }).catch((err) => {
-    console.log(err);
-  });
+  customer
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
-app.get("/single-customer", (req, res) => {
-  Customer.findById("5f755cafa0381c467432605b").then((result) => {
-    res.send(result);
-  }).catch((err) => {
-    console.log(err);
-  });
-})
+app.get('/all-customers', (req, res) => {
+  Customer.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
-app.get("/customer-firstname", (req, res) => {
-  Customer.findOne({ firstName: "Eduardo" }).then((result) => {
-    res.send(result);
-    console.log(result);
-    currentUser = result;
-    getName(result);
-    getPass(result);
-    console.log(currentUser.firstName);
-  }).catch((err) => {
-    console.log(err);
-  });
+app.get('/single-customer', (req, res) => {
+  Customer.findById('5f755cafa0381c467432605b')
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
-  
+app.get('/customer-firstname', (req, res) => {
+  Customer.findOne({ firstName: 'Eduardo' })
+    .then((result) => {
+      res.send(result);
+      console.log(result);
+      currentUser = result;
+      getName(result);
+      getPass(result);
+      console.log(currentUser.firstName);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 function getName(result) {
@@ -73,37 +83,36 @@ function getPass(result) {
   console.log(result.password);
 }
 
-app.get("/", function(req, res){
-    // res.render("index.ejs");
-    res.render("profile", {
-      "Title": "Testing"
-    });
-});//root
+app.get('/', function (req, res) {
+  res.render('home', {
+    Title: 'Store Landing Page',
+  });
+}); //root
 
-app.get("/login", function(req, res){
+app.get('/login', function (req, res) {
   // res.render("index.ejs");
-  res.send("It works adware!");
-});//root
+  res.send('It works adware!');
+}); //root
 
-app.get("/sign", function(req, res){
+app.get('/sign', function (req, res) {
   // res.render("index.ejs");
-  res.send("It works ransom!");
-});//root
+  res.send('It works ransom!');
+}); //root
 
-app.get("/shop", function(req, res){
+app.get('/shop', function (req, res) {
   // res.render("index.ejs");
-  res.send("It works recent!");
-});//root
+  res.send('It works recent!');
+}); //root
 
-app.get("/cart", function(req, res){
+app.get('/cart', function (req, res) {
   // res.render("index.ejs");
-  res.send("It works recent!");
-});//root
+  res.send('It works recent!');
+}); //root
 
-app.get("/profile", function(req, res){
+app.get('/profile', function (req, res) {
   // res.render("index.ejs");
-  res.send("It works recent!");
-});//root
+  res.send('It works recent!');
+}); //root
 
 //running server
 // app.listen(3000, function(){
@@ -145,7 +154,7 @@ app.get("/profile", function(req, res){
 //     } catch (err) {
 //         console.error(err);
 //     }
-    
+
 // })();
 
 // const request = require('request');
