@@ -1,0 +1,54 @@
+const product = new Product({
+    name: "The Dark Knight",
+    price: "20.00",
+    release: "2008-07-16",
+    categories: ["Action", "Crime", "Drama", "Thriller"],
+    stock: 20,
+    poster: "./public/img/The_Dark_Knight.webp",
+    description: "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.",
+    summary: "Batman raises the stakes in his war on crime...",
+});
+
+const product = new Product({
+    name: "The Lord of the Rings: The Return of the King",
+    price: "18.50",
+    release: "2003-12-01",
+    categories: ["Action", "Adventure", "Drama", "Fantasy"],
+    stock: 20,
+    poster: "./public/img/The_Return_of_the_King.jpg",
+    description: "Aragorn is revealed as the heir to the ancient kings as he, Gandalf and the other members of the broken fellowship struggle to save Gondor from Sauron's forces. Meanwhile, Frodo and Sam take the ring closer to the heart of Mordor, the dark lord's realm.",
+    summary: "Aragorn is revealed as the heir to the ancient kings...",
+});
+
+const product = new Product({
+    name: "Life Is Beautiful",
+    price: "15.00",
+    release: "1997-12-20",
+    categories: ["Comedy", "Romance", "Drama", "War"],
+    stock: 20,
+    poster: "./public/img/Life_Is_Beautiful.jpg",
+    description: "A touching story of an Italian book seller of Jewish ancestry who lives in his own little fairy tale. His creative and happy life would come to an abrupt halt when his entire family is deported to a concentration camp during World War II. While locked up he tries to convince his son that the whole thing is just a game.",
+    summary: "A touching story of an Italian book seller...",
+});
+
+const product = new Product({
+    name: "Parasite",
+    price: "20.00",
+    release: "2019-05-30",
+    categories: ["Comedy", "Drama", "Thriller"],
+    stock: 20,
+    poster: "./public/img/parasite.jpg",
+    description: "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+    summary: "All unemployed, Ki-taek's family takes peculiar...",
+});
+
+const product = new Product({
+    name: "Spirited Away",
+    price: "25.00",
+    release: "2001-07-20",
+    categories: ["Animation", "Adventure", "Family", "Fantasy", "Mystery"],
+    stock: 20,
+    poster: "./public/img/spirited_away.jpg",
+    description: "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+    summary: "A young girl, Chihiro, becomes trapped...",
+});

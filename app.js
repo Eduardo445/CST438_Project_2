@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public')); // access images, css, js
+require('mongoose-currency').loadType(mongoose);
+var Currency = mongoose.Types.Currency;
 
 const Customer = require('./models/customer');
-// const MongoClient = require("mongodb").MongoClient;
-
+const Product = require('./models/product');
 // Will track the user that is logged in
 let currentUser;
 
@@ -37,6 +38,27 @@ app.get("/add-customer", (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+app.get('/addMovies', (req, res) => {
+  const product = new Product({
+    name: "Spirited Away",
+    price: "25.00",
+    release: "2001-07-20",
+    categories: ["Animation", "Adventure", "Family", "Fantasy", "Mystery"],
+    stock: 20,
+    poster: "./public/img/spirited_away.jpg",
+    description: "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+    summary: "A young girl, Chihiro, becomes trapped...",
+  });
+
+  product.save().then((result) => {
+    res.send(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+  
 });
 
 app.get('/all-customers', (req, res) => {
