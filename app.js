@@ -8,8 +8,8 @@ app.use(express.static('public')); // access images, css, js
 const Customer = require('./models/customer');
 // const MongoClient = require("mongodb").MongoClient;
 
+// Will track the user that is logged in
 let currentUser;
-
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -60,10 +60,13 @@ app.get('/single-customer', (req, res) => {
 });
 
 app.get('/customer-firstname', (req, res) => {
+  
+  addNum();
+  
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
-      console.log(result);
+      // console.log(result);
       currentUser = result;
       getName(result);
       getPass(result);
@@ -72,6 +75,9 @@ app.get('/customer-firstname', (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+
+    addNum();
+    console.log(subNum());
 });
 
 function getName(result) {
