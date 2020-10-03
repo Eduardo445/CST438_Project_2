@@ -4,19 +4,56 @@
     <%- include('./partials/head'); %>
   </head>
   <%- include('./partials/nav'); %>
-  <!-- some images around here-->
-  <div class="jumbotron">
-    <h1 class="display-4">Hello, world!</h1>
+  <!-- jumbotron -->
+  <div style='background:transparent !important' class="jumbotron">
+    <h1 class="display-4">Welcome to Movie Store</h1>
     <p class="lead">
-      This is a simple hero unit, a simple jumbotron-style component for calling
-      extra attention to featured content or information.
+      We sell lots of movies. Pick your favorite
     </p>
     <hr class="my-4" />
-    <p>
-      It uses utility classes for typography and spacing to space content out
-      within the larger container.
-    </p>
-    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
   </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <h1 class='display-4'>Featured Movies</h1>
+    </div>
+  </div>
+
+  <!-- featured movies -->
+  <section class="movie-list">
+
+    <article class="card">
+      <header class="movie-header">
+        <p>Movie release date</p>
+        <h2 id='movie_title'>some movie title goes here</h2>
+      </header>
+
+      <div class="movie-image">
+        <a class="movie-poster">
+          <img src="/img/1917.jpg" />
+        </a>
+      </div>
+
+      <div class="tags">
+        <a>horror</a>
+        <a>scary</a>
+        <a>lame</a>
+      </div>
+    </article>
+
+
+    <!-- Add more movies here -->
+
+
+
+</section>
+
+  <script>
+    $('#movie_title').click(function() {
+      console.log('title clicked')
+    });
+
+  </script>
   <%- include('./partials/footer'); %>
 </html>
+

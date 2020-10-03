@@ -12,20 +12,6 @@ let currentUser;
 
 
 // Connect to mongodb
-<<<<<<< HEAD
-const uri =
-  'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
-mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) =>
-    app.listen(3000, function () {
-      console.log('Express server is running...');
-    })
-  )
-  .catch((err) => console.log(err));
-
-app.get('/add-customer', (req, res) => {
-=======
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => app.listen(process.env.PORT || 3000, function() {
@@ -36,7 +22,6 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.get("/add-customer", (req, res) => {
 
->>>>>>> 50b1f625eac78eb5ffe7811f94f848c3fc6f6245
   const customer = new Customer({
     firstName: 'Eduardos',
     lastName: 'Soto',
@@ -97,20 +82,21 @@ function getPass(result) {
   console.log(result.password);
 }
 
-app.get('/', function (req, res) {
+
+app.get('/', function (_req, res) {
   res.render('home', {
     Title: 'Store Landing Page',
+    Username: 'guest'
   });
 }); //root
+
+app.get('/create_account', function(req, res) {
+  res.send('implement create account')
+})
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
   res.send('It works adware!');
-}); //root
-
-app.get('/sign', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works ransom!');
 }); //root
 
 app.get('/shop', function (req, res) {
