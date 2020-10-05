@@ -1,6 +1,8 @@
 const { Int32, Double } = require('mongodb');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+require('mongoose-currency').loadType(mongoose);
+let Currency = mongoose.Types.Currency;
 
 const productSchema = new Schema({
     name: {
@@ -8,7 +10,7 @@ const productSchema = new Schema({
         required: true
     },
     price: {
-        type: Double,
+        type: Currency,
         required: true
     },
     release: {
@@ -20,10 +22,10 @@ const productSchema = new Schema({
         required: true
     },
     stock: {
-        type: Int32,
+        type: Number,
         required: true
     },
-    company: {
+    poster: {
         type: String,
         required: true
     },
