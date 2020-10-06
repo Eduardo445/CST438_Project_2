@@ -139,3 +139,84 @@ ul {
     font-family: 'Oswald', sans-serif;
     font-size: 0.75ex;
 }
+
+.register_body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("/img/purple_mountain.jpg");
+}
+.cool {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: sans-serif;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 30px;
+  }
+  
+  .cool:hover {
+    animation: animate 8s linear infinite;
+  }
+  
+  @keyframes animate {
+    0% {
+      background-position: 0%;
+    }
+    100% {
+      background-position: 400%;
+    }
+  }
+  
+  .cool:before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 40px;
+    opacity: 0;
+    transition: 0.5s;
+  }
+  
+  .cool:hover:before {
+    filter: blur(20px);
+    opacity: 1;
+    animation: animate 8s linear infinite;
+  }
+  .elegant-lightback {
+    color: white;
+    background: rgba(0, 0, 0, .65);
+    background-size: 400%;
+    border-radius: 10px;
+    padding: 70px;
+    transition: 1s;
+  }
+  
+  .elegant-lightback:hover {
+    color: white;
+    background: rgba(0, 0, 0, .35);
+    background-size: 400%;
+    border-radius: 10px;
+    padding: 70px;
+    transition: 1s;
+  }
+  .center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
+  .monospace {
+    font-family: "Lucida Console", Courier, monospace;
+    font-size: 80px;
+    text-align: center;
+  }
