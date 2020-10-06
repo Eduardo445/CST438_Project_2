@@ -112,12 +112,18 @@ app.get('/', function (_req, res) {
 }); //root
 
 app.get('/create_account', function(req, res) {
-  res.send('implement create account')
-})
+  res.render('create_account', {
+    Title: 'Sign Up Page',
+    Username: 'guest'
+  });
+});
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
-  res.send('It works adware!');
+  res.render('login', {
+    Title: 'Log In Page',
+    Username: 'guest'
+  });
 }); //root
 
 app.get('/shop', function (req, res) {
