@@ -9,8 +9,8 @@ var Currency = mongoose.Types.Currency;
 
 const Customer = require('./models/customer');
 const Product = require('./models/product');
-// Will track the user that is logged in
-let currentUser;
+
+let currentUser = "5f755cafa0381c467432605b"; // Will track the user that is logged in
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -21,8 +21,8 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   }))
   .catch((err) => console.log(err));
 
-app.get("/add-customer", (req, res) => {
 
+app.get("/add-customer", (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
     lastName: 'Soto',
@@ -30,8 +30,7 @@ app.get("/add-customer", (req, res) => {
     password: 'count#',
   });
 
-  customer
-    .save()
+  customer.save()
     .then((result) => {
       res.send(result);
     })
@@ -82,9 +81,6 @@ app.get('/single-customer', (req, res) => {
 });
 
 app.get('/customer-firstname', (req, res) => {
-  
-  addNum();
-  
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
@@ -97,9 +93,6 @@ app.get('/customer-firstname', (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-
-    addNum();
-    console.log(subNum());
 });
 
 function getName(result) {
@@ -137,9 +130,26 @@ app.get('/cart', function (req, res) {
   res.send('It works recent!');
 }); //root
 
-app.get('/profile', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works recent!');
+app.get('/profile/:id', function (req, res) {
+  const id = currentUser;
+  if (id != "") {
+    Customer.findById(id)
+    .then((result) => {
+      res.render("profile", {
+        Title: 'Store Landing Page',
+        Username: result.username,
+        UserInfo: result 
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  } else {
+    res.redirect('/');
+  }
+
+  
+  // res.send('It works recent!');
 }); //root
 
 //running server
