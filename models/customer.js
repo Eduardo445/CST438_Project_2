@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+require('mongoose-currency').loadType(mongoose);
+let Currency = mongoose.Types.Currency;
 
 const customerSchema = new Schema({
     firstName: {
@@ -16,6 +18,10 @@ const customerSchema = new Schema({
     },
     password: {
         type: String,
+        required: true
+    },
+    totalSpent: {
+        type: Currency,
         required: true
     }
 }, { timestamps: true });

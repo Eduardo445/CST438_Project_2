@@ -1,6 +1,7 @@
 const { clear } = require('console');
 const express = require('express');
 const mongoose = require('mongoose');
+const { db } = require('./models/customer');
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public')); // access images, css, js
@@ -95,6 +96,31 @@ app.get('/customer-firstname', (req, res) => {
     });
 });
 
+// This is an example of how to add a new field to the db with a value
+// If you do, make sure to update the schema first in the models folder
+
+// Ex. This customer did not have totalSpent. Eduardo added to the schema first.
+// Then used this command to add the new field to the db witht he new value.
+app.get('/new-field', function (req, res) {
+  Customer.updateOne({ firstName: "Eduardos" }, {$set: { totalSpent: "15.00" }})
+  .then((result) => {
+    res.send(result);
+  }).catch((error) => {
+    console.log(error);
+  });
+
+});
+
+app.get('/update-customer', function (req, res) {
+  Customer.updateOne({ firstName: "Eduardo" }, {totalSpent: "12.55"})
+  .then((result) => {
+    res.send(result);
+  }).catch((error) => {
+    console.log(error);
+  });
+
+});
+
 function getName(result) {
   console.log(result.lastName);
 }
@@ -106,14 +132,12 @@ function getPass(result) {
 
 app.get('/', function (_req, res) {
   res.render('home', {
-    Title: 'Store Landing Page',
     Username: 'guest'
   });
 }); //root
 
 app.get('/create_account', function(req, res) {
   res.render('create_account', {
-    Title: 'Sign Up Page',
     Username: 'guest'
   });
 });
@@ -121,14 +145,8 @@ app.get('/create_account', function(req, res) {
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
   res.render('login', {
-    Title: 'Log In Page',
     Username: 'guest'
   });
-}); //root
-
-app.get('/shop', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works recent!');
 }); //root
 
 app.get('/cart', function (req, res) {
@@ -136,13 +154,17 @@ app.get('/cart', function (req, res) {
   res.send('It works recent!');
 }); //root
 
-app.get('/profile/:id', function (req, res) {
+app.get('/shop', function (req, res) {
+  // res.render("index.ejs");
+  res.send('It works recent!');
+}); //root
+
+app.get('/profile', function (req, res) {
   const id = currentUser;
   if (id != "") {
     Customer.findById(id)
     .then((result) => {
       res.render("profile", {
-        Title: 'Store Landing Page',
         Username: result.username,
         UserInfo: result 
       });
@@ -164,41 +186,3 @@ app.get('/profile/:id', function (req, res) {
 // });
 
 // -----------------------------------
-
-// const client = new MongoClient(process.env.ATLAS_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// client.connect(err => {
-//   const collection = client.db("WebStore").collection("Customers");
-//   // perform actions on the collection object
-//   client.close();
-// });
-
-// client.connect().then(result => {
-//     const database = client.db("WebStore");
-//     const collection = database.collection("Customers");
-//     console.log(result);
-// }, error => {
-//     console.error(error);
-// });
-
-// (async () => {
-//     try {
-//         await client.connect();
-//         const database = client.db("WebStore");
-//         const collection = database.collection("Customers");
-//         const result = await collection.insertOne({
-//             "firstName": "Eduardo",
-//             "lastName" : "Soto",
-//             "username" : "Testing",
-//             "password" : "Admin!"
-//         });
-//         console.log(result.insertId);
-//         client.close();
-//     } catch (err) {
-//         console.error(err);
-//     }
-
-// })();
-
-// const request = require('request');
