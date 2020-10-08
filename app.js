@@ -1,15 +1,17 @@
 const { clear } = require('console');
 const express = require('express');
 const mongoose = require('mongoose');
+const { db } = require('./models/customer');
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public')); // access images, css, js
+require('mongoose-currency').loadType(mongoose);
+var Currency = mongoose.Types.Currency;
 
 const Customer = require('./models/customer');
-// const MongoClient = require("mongodb").MongoClient;
+const Product = require('./models/product');
 
-// Will track the user that is logged in
-let currentUser;
+let currentUser = "5f755cafa0381c467432605b"; // Will track the user that is logged in
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -20,8 +22,8 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   }))
   .catch((err) => console.log(err));
 
-app.get("/add-customer", (req, res) => {
 
+app.get("/add-customer", (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
     lastName: 'Soto',
@@ -29,14 +31,34 @@ app.get("/add-customer", (req, res) => {
     password: 'count#',
   });
 
-  customer
-    .save()
+  customer.save()
     .then((result) => {
       res.send(result);
     })
     .catch((err) => {
       console.log(err);
     });
+});
+
+app.get('/addMovies', (req, res) => {
+  const product = new Product({
+    name: "Spirited Away",
+    price: "25.00",
+    release: "2001-07-20",
+    categories: ["Animation", "Adventure", "Family", "Fantasy", "Mystery"],
+    stock: 20,
+    poster: "./public/img/spirited_away.jpg",
+    description: "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+    summary: "A young girl, Chihiro, becomes trapped...",
+  });
+
+  product.save().then((result) => {
+    res.send(result);
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+  
 });
 
 app.get('/all-customers', (req, res) => {
@@ -60,9 +82,12 @@ app.get('/single-customer', (req, res) => {
 });
 
 app.get('/customer-firstname', (req, res) => {
+<<<<<<< HEAD
 
   addNum();
 
+=======
+>>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
@@ -75,9 +100,31 @@ app.get('/customer-firstname', (req, res) => {
     .catch((err) => {
       console.log(err);
     });
+});
 
-    addNum();
-    console.log(subNum());
+// This is an example of how to add a new field to the db with a value
+// If you do, make sure to update the schema first in the models folder
+
+// Ex. This customer did not have totalSpent. Eduardo added to the schema first.
+// Then used this command to add the new field to the db witht he new value.
+app.get('/new-field', function (req, res) {
+  Customer.updateOne({ firstName: "Eduardos" }, {$set: { totalSpent: "15.00" }})
+  .then((result) => {
+    res.send(result);
+  }).catch((error) => {
+    console.log(error);
+  });
+
+});
+
+app.get('/update-customer', function (req, res) {
+  Customer.updateOne({ firstName: "Eduardo" }, {totalSpent: "12.55"})
+  .then((result) => {
+    res.send(result);
+  }).catch((error) => {
+    console.log(error);
+  });
+
 });
 
 function getName(result) {
@@ -91,33 +138,62 @@ function getPass(result) {
 
 app.get('/', function (_req, res) {
   res.render('home', {
-    Title: 'Store Landing Page',
     Username: 'guest'
   });
 });
 
 app.get('/create_account', function(req, res) {
-  res.send('implement create account')
-})
+  res.render('create_account', {
+    Username: 'guest'
+  });
+});
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
+<<<<<<< HEAD
   res.send('implement login!');
-}); //root
-
-app.get('/shop', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works recent!');
+=======
+  res.render('login', {
+    Username: 'guest'
+  });
+>>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
 }); //root
 
 app.get('/cart', function (req, res) {
   // res.render("index.ejs");
+  res.send('It works recent!');
+}); //root
+
+app.get('/shop', function (req, res) {
+  // res.render("index.ejs");
   res.send('implement shopping cart!');
 }); //root
 
+<<<<<<< HEAD
 app.get('/edit_profile', function (req, res) {
   // res.render("index.ejs");
   res.send('implement edit profile!');
+=======
+app.get('/profile', function (req, res) {
+  const id = currentUser;
+  if (id != "") {
+    Customer.findById(id)
+    .then((result) => {
+      res.render("profile", {
+        Username: result.username,
+        UserInfo: result 
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  } else {
+    res.redirect('/');
+  }
+
+  
+  // res.send('It works recent!');
+>>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
 }); //root
 
 //running server
@@ -126,41 +202,3 @@ app.get('/edit_profile', function (req, res) {
 // });
 
 // -----------------------------------
-
-// const client = new MongoClient(process.env.ATLAS_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// client.connect(err => {
-//   const collection = client.db("WebStore").collection("Customers");
-//   // perform actions on the collection object
-//   client.close();
-// });
-
-// client.connect().then(result => {
-//     const database = client.db("WebStore");
-//     const collection = database.collection("Customers");
-//     console.log(result);
-// }, error => {
-//     console.error(error);
-// });
-
-// (async () => {
-//     try {
-//         await client.connect();
-//         const database = client.db("WebStore");
-//         const collection = database.collection("Customers");
-//         const result = await collection.insertOne({
-//             "firstName": "Eduardo",
-//             "lastName" : "Soto",
-//             "username" : "Testing",
-//             "password" : "Admin!"
-//         });
-//         console.log(result.insertId);
-//         client.close();
-//     } catch (err) {
-//         console.error(err);
-//     }
-
-// })();
-
-// const request = require('request');
