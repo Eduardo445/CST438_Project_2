@@ -134,9 +134,9 @@ app.get('/', function (_req, res) {
 
   // some quick example, will get from DB
   var movie_info = [
-    {author: "1918", date: "08/15/20", tag_1: "lame"},
-    {author: "some other movie", date: "09/02/00", tag_1: "exciting"},
-    {author: "last movie idk", date: "12/31/20", tag_1: "i dont know man" }
+    {movie: "1918", date: "08/15/20", tag_1: "lame"},
+    {movie: "some other movie", date: "09/02/00", tag_1: "exciting"},
+    {movie: "last movie idk", date: "12/31/20", tag_1: "i dont know man" }
   ]
 
   res.render('home', {
