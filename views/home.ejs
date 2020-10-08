@@ -22,51 +22,31 @@
   <!-- featured movies -->
   <section class="movie-list">
 
-    <article class="card">
-      <header class="movie-header">
-        <p>Movie release date</p>
-        <h2 id='movie_title'>some movie title goes here</h2>
-      </header>
-
-      <div class="movie-image">
-        <a class="movie-poster">
-          <img src="/img/1917.jpg" />
-        </a>
-      </div>
-
-      <div class="tags">
-        <a>horror</a>
-        <a>scary</a>
-        <a>lame</a>
-      </div>
-    </article>
-
-
-    <!-- Add more movies here -->
-    <article class="card">
-      <header class="movie-header">
-        <p>Movie release date</p>
-        <h2 id='movie_title'>some movie title goes here</h2>
-      </header>
-
-      <div class="movie-image">
-        <a class="movie-poster">
-          <img src="/img/1917.jpg" />
-        </a>
-      </div>
-
-      <div class="tags">
-        <a>horror</a>
-        <a>scary</a>
-        <a>lame</a>
-      </div>
-    </article>
+    <!-- movies added (dynamic) -->
+    <% Movie.forEach(function(movie_info) { %>
+      <article class="card">
+        <header class="movie-header">
+          <p><%= movie_info.date %></p>
+          <h2 id='movie_title'><%= movie_info.author %></h2>
+        </header>
+        <div class="movie-image">
+          <a class="movie-poster">
+            <img src="/img/1917.jpg" />
+          </a>
+        </div>
+        <div class="tags">
+          <a><%= movie_info.tag_1 %></a>
+        </div>
+      </article>
+    <% }) %>
 
 </section>
 
   <script>
     $('#movie_title').click(function() {
       console.log('title clicked')
+
+
     });
 
   </script>

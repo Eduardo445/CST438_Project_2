@@ -58,7 +58,7 @@ app.get('/addMovies', (req, res) => {
   .catch((err) => {
     console.log(err);
   })
-  
+
 });
 
 app.get('/all-customers', (req, res) => {
@@ -82,12 +82,6 @@ app.get('/single-customer', (req, res) => {
 });
 
 app.get('/customer-firstname', (req, res) => {
-<<<<<<< HEAD
-
-  addNum();
-
-=======
->>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
@@ -137,8 +131,17 @@ function getPass(result) {
 
 
 app.get('/', function (_req, res) {
+
+  // some quick example, will get from DB
+  var movie_info = [
+    {author: "1918", date: "08/15/20", tag_1: "lame"},
+    {author: "some other movie", date: "09/02/00", tag_1: "exciting"},
+    {author: "last movie idk", date: "12/31/20", tag_1: "i dont know man" }
+  ]
+
   res.render('home', {
-    Username: 'guest'
+    Username: 'guest',
+    Movie: movie_info,
   });
 });
 
@@ -150,13 +153,9 @@ app.get('/create_account', function(req, res) {
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
-<<<<<<< HEAD
-  res.send('implement login!');
-=======
   res.render('login', {
     Username: 'guest'
   });
->>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
 }); //root
 
 app.get('/cart', function (req, res) {
@@ -169,11 +168,6 @@ app.get('/shop', function (req, res) {
   res.send('implement shopping cart!');
 }); //root
 
-<<<<<<< HEAD
-app.get('/edit_profile', function (req, res) {
-  // res.render("index.ejs");
-  res.send('implement edit profile!');
-=======
 app.get('/profile', function (req, res) {
   const id = currentUser;
   if (id != "") {
@@ -181,7 +175,7 @@ app.get('/profile', function (req, res) {
     .then((result) => {
       res.render("profile", {
         Username: result.username,
-        UserInfo: result 
+        UserInfo: result
       });
     })
     .catch((err) => {
@@ -191,9 +185,8 @@ app.get('/profile', function (req, res) {
     res.redirect('/');
   }
 
-  
+
   // res.send('It works recent!');
->>>>>>> 3ba37a2d9d29f9c8d1256602252bb8b60dc8250b
 }); //root
 
 //running server
