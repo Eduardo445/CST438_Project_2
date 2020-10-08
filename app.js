@@ -1,5 +1,6 @@
 const { clear } = require('console');
 const express = require('express');
+const { getUnpackedSettings } = require('http2');
 const mongoose = require('mongoose');
 const { db } = require('./models/customer');
 const app = express();
@@ -11,19 +12,22 @@ var Currency = mongoose.Types.Currency;
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 
-let currentUser = "5f755cafa0381c467432605b"; // Will track the user that is logged in
+let currentUser = '5f755cafa0381c467432605b'; // Will track the user that is logged in
 
 // Connect to mongodb
-const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => app.listen(process.env.PORT || 3000, function() {
-    console.log("Express server is running...");
-    console.log(this.address().port);
-  }))
+const uri =
+  'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
+mongoose
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) =>
+    app.listen(process.env.PORT || 3000, function () {
+      console.log('Express server is running...');
+      console.log(this.address().port);
+    })
+  )
   .catch((err) => console.log(err));
 
-
-app.get("/add-customer", (req, res) => {
+app.get('/add-customer', (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
     lastName: 'Soto',
@@ -31,7 +35,8 @@ app.get("/add-customer", (req, res) => {
     password: 'count#',
   });
 
-  customer.save()
+  customer
+    .save()
     .then((result) => {
       res.send(result);
     })
@@ -42,23 +47,25 @@ app.get("/add-customer", (req, res) => {
 
 app.get('/addMovies', (req, res) => {
   const product = new Product({
-    name: "Spirited Away",
-    price: "25.00",
-    release: "2001-07-20",
-    categories: ["Animation", "Adventure", "Family", "Fantasy", "Mystery"],
+    name: 'Spirited Away',
+    price: '25.00',
+    release: '2001-07-20',
+    categories: ['Animation', 'Adventure', 'Family', 'Fantasy', 'Mystery'],
     stock: 20,
-    poster: "./public/img/spirited_away.jpg",
-    description: "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
-    summary: "A young girl, Chihiro, becomes trapped...",
+    poster: './public/img/spirited_away.jpg',
+    description:
+      'A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.',
+    summary: 'A young girl, Chihiro, becomes trapped...',
   });
 
-  product.save().then((result) => {
-    res.send(result);
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-
+  product
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.get('/all-customers', (req, res) => {
@@ -102,23 +109,26 @@ app.get('/customer-firstname', (req, res) => {
 // Ex. This customer did not have totalSpent. Eduardo added to the schema first.
 // Then used this command to add the new field to the db witht he new value.
 app.get('/new-field', function (req, res) {
-  Customer.updateOne({ firstName: "Eduardos" }, {$set: { totalSpent: "15.00" }})
-  .then((result) => {
-    res.send(result);
-  }).catch((error) => {
-    console.log(error);
-  });
-
+  Customer.updateOne(
+    { firstName: 'Eduardos' },
+    { $set: { totalSpent: '15.00' } }
+  )
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 app.get('/update-customer', function (req, res) {
-  Customer.updateOne({ firstName: "Eduardo" }, {totalSpent: "12.55"})
-  .then((result) => {
-    res.send(result);
-  }).catch((error) => {
-    console.log(error);
-  });
-
+  Customer.updateOne({ firstName: 'Eduardo' }, { totalSpent: '12.55' })
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 function getName(result) {
@@ -129,32 +139,27 @@ function getPass(result) {
   console.log(result.password);
 }
 
-
 app.get('/', function (_req, res) {
-
-  // some quick example, will get from DB
-  var movie_info = [
-    {movie: "1918", date: "08/15/20", tag_1: "lame"},
-    {movie: "some other movie", date: "09/02/00", tag_1: "exciting"},
-    {movie: "last movie idk", date: "12/31/20", tag_1: "i dont know man" }
-  ]
-
-  res.render('home', {
-    Username: 'guest',
-    Movie: movie_info,
+  // get movies from DB
+  Product.find().then((result) => {
+    console.log(result);
+    res.render('home', {
+      Username: 'Guest',
+      Movie: [],
+    });
   });
 });
 
-app.get('/create_account', function(req, res) {
+app.get('/create_account', function (req, res) {
   res.render('create_account', {
-    Username: 'guest'
+    Username: 'guest',
   });
 });
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
   res.render('login', {
-    Username: 'guest'
+    Username: 'guest',
   });
 }); //root
 
@@ -170,21 +175,20 @@ app.get('/shop', function (req, res) {
 
 app.get('/profile', function (req, res) {
   const id = currentUser;
-  if (id != "") {
+  if (id != '') {
     Customer.findById(id)
-    .then((result) => {
-      res.render("profile", {
-        Username: result.username,
-        UserInfo: result
+      .then((result) => {
+        res.render('profile', {
+          Username: result.username,
+          UserInfo: result,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    })
-    .catch((err) => {
-      console.log(err);
-    })
   } else {
     res.redirect('/');
   }
-
 
   // res.send('It works recent!');
 }); //root
