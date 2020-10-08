@@ -60,9 +60,9 @@ app.get('/single-customer', (req, res) => {
 });
 
 app.get('/customer-firstname', (req, res) => {
-  
+
   addNum();
-  
+
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
@@ -94,7 +94,7 @@ app.get('/', function (_req, res) {
     Title: 'Store Landing Page',
     Username: 'guest'
   });
-}); //root
+});
 
 app.get('/create_account', function(req, res) {
   res.send('implement create account')
@@ -102,7 +102,7 @@ app.get('/create_account', function(req, res) {
 
 app.get('/login', function (req, res) {
   // res.render("index.ejs");
-  res.send('It works adware!');
+  res.send('implement login!');
 }); //root
 
 app.get('/shop', function (req, res) {
@@ -112,12 +112,12 @@ app.get('/shop', function (req, res) {
 
 app.get('/cart', function (req, res) {
   // res.render("index.ejs");
-  res.send('It works recent!');
+  res.send('implement shopping cart!');
 }); //root
 
-app.get('/profile', function (req, res) {
+app.get('/edit_profile', function (req, res) {
   // res.render("index.ejs");
-  res.send('It works recent!');
+  res.send('implement edit profile!');
 }); //root
 
 //running server
