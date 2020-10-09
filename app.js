@@ -141,13 +141,22 @@ function getPass(result) {
 
 app.get('/', function (_req, res) {
   // get movies from DB
-  Product.find().then((result) => {
-    console.log(result);
-    res.render('home', {
-      Username: 'Guest',
-      Movie: [],
+  Product.find()
+    .then((result) => {
+      var movie_names = [];
+      result.forEach(function (movie_name) {
+        movie_names.push(movie_name.name);
+      });
+
+      res.render('home', {
+        Username: 'Guest',
+        MovieObject: result,
+        MovieNames: movie_names,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 });
 
 app.get('/create_account', function (req, res) {
