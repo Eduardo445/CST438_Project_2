@@ -1,6 +1,7 @@
 const { clear } = require('console');
 const express = require('express');
 const { getUnpackedSettings } = require('http2');
+const { url } = require('inspector');
 const mongoose = require('mongoose');
 const { db } = require('./models/customer');
 const app = express();
@@ -140,6 +141,19 @@ function getPass(result) {
 }
 
 app.get('/', function (_req, res) {
+
+  var id = currentUser;
+  if (id == '') {
+    console.log('no username')
+    id = 'Guest'
+  } else {
+    Customer.findById(id).then((result) => {
+      id = result.username
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
   // get movies from DB
   Product.find()
     .then((result) => {
@@ -149,7 +163,7 @@ app.get('/', function (_req, res) {
       });
 
       res.render('home', {
-        Username: 'Guest',
+        Username: id,
         MovieObject: result,
         MovieNames: movie_names,
       });
@@ -159,7 +173,34 @@ app.get('/', function (_req, res) {
     });
 });
 
-app.get('/search=?', function(req, res) {
+app.get('/search', function(req, res) {
+
+  var id = currentUser;
+  if (id == '') {
+    console.log('no username')
+    id = 'Guest'
+  } else {
+    Customer.findById(id).then((result) => {
+      id = result.username
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  var url = req._parsedUrl.query
+
+
+  Product.findById(url)
+    .then((result) => {
+      res.render('product_details', {
+        Movie: result,
+        Username: id
+      })
+
+    }).catch((error) => {
+      console.log(error)
+      res.redirect('/')
+    });
 
 });
 

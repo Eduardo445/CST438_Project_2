@@ -25,7 +25,7 @@
       <header class="movie-header">
         <p><%= MovieObject[i].release %></p>
         <h2>
-          <a href="<%= MovieObject[i]._id %>" style="color: currentColor">
+          <a href="search?<%= MovieObject[i]._id %>" style="color: currentColor">
             <%= MovieObject[i].name %>
           </a>
         </h2>
@@ -45,10 +45,6 @@
   </section>
   <script>
     $(document).ready(function () {
-      
-
-      
-      
 
 
     });
