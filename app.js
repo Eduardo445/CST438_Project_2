@@ -15,8 +15,8 @@ const Product = require('./models/product');
 let currentUser = '5f755cafa0381c467432605b'; // Will track the user that is logged in
 
 // Connect to mongodb
-const uri =
-  'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
+
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) =>
@@ -47,16 +47,15 @@ app.get('/add-customer', (req, res) => {
 
 app.get('/addMovies', (req, res) => {
   const product = new Product({
-    name: 'Spirited Away',
-    price: '25.00',
-    release: '2001-07-20',
-    categories: ['Animation', 'Adventure', 'Family', 'Fantasy', 'Mystery'],
+    name: "Parasite",
+    price: "20.00",
+    release: "2019-05-30",
+    categories: ["Comedy", "Drama", "Thriller"],
     stock: 20,
-    poster: './public/img/spirited_away.jpg',
-    description:
-      'A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.',
-    summary: 'A young girl, Chihiro, becomes trapped...',
-  });
+    poster: "img/parasite.jpg",
+    description: "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
+    summary: "All unemployed, Ki-taek's family takes peculiar...",
+});
 
   product
     .save()
@@ -69,7 +68,7 @@ app.get('/addMovies', (req, res) => {
 });
 
 app.get('/all-customers', (req, res) => {
-  Customer.find()
+  Product.find()
     .then((result) => {
       res.send(result);
     })
@@ -202,13 +201,22 @@ app.get('/profile', function (req, res) {
   } else {
     res.redirect('/');
   }
+}); // User Profile Page
 
-  // res.send('It works recent!');
-}); //root
-
-//running server
-// app.listen(3000, function(){
-//   console.log("Express server is running...");
-// });
-
-// -----------------------------------
+app.get('/updateUser', function (req, res) {
+  const id = currentUser;
+  if (id != "") {
+    Customer.findById(id)
+    .then((result) => {
+      res.render("update_profile", {
+        Username: result.username,
+        UserInfo: result 
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  } else {
+    res.redirect('/');
+  }
+}); // User Profile Page
