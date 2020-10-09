@@ -159,6 +159,10 @@ app.get('/', function (_req, res) {
     });
 });
 
+app.get('/search=?', function(req, res) {
+
+});
+
 app.get('/create_account', function (req, res) {
   res.render('create_account', {
     Username: 'guest',
