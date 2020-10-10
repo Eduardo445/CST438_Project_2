@@ -188,7 +188,6 @@ app.get('/search', function(req, res) {
 
   var url = req._parsedUrl.query
 
-
   Product.findById(url)
     .then((result) => {
       res.render('product_details', {
@@ -251,7 +250,7 @@ app.get('/updateUser', function (req, res) {
     .then((result) => {
       res.render("update_profile", {
         Username: result.username,
-        UserInfo: result 
+        UserInfo: result
       });
     })
     .catch((err) => {
