@@ -25,13 +25,14 @@
       <header class="movie-header">
         <p><%= MovieObject[i].release %></p>
         <h2>
-          <a href="<%= MovieObject[i]._id %>" style="color: currentColor">
+          <a href="search?<%= MovieObject[i]._id %>" style="color: currentColor">
             <%= MovieObject[i].name %>
           </a>
         </h2>
       </header>
       <div class="movie-image">
         <a class="movie-poster">
+          <!-- size is 184 x 273 -->
           <img src="<%= MovieObject[i].poster %>" />
         </a>
       </div>
@@ -45,10 +46,6 @@
   </section>
   <script>
     $(document).ready(function () {
-      
-
-      
-      
 
 
     });
