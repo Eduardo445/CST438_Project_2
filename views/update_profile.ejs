@@ -16,40 +16,51 @@
 
         <!-- User Info -->
         <section class="user-info">
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>First Name:&nbsp;</h3>
-                    <input type="text" name="first">
+            <form action="/profile/update/<%= UserInfo._id %>?_method=PUT", method="POST">
+                <input type="hidden" name="_METHOD" value="PUT"/>
+                <div class="userinfo">
+                    <div class="row justify-content-center">
+                        <h3 class='display-4'>First Name:&nbsp;</h3>
+                        <input type="text" name="first" value="<%= UserInfo.firstName %>">
+                    </div>
                 </div>
-            </div>
 
-            <br>
+                <br>
 
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Last Name:&nbsp;</h3>
-                    <input type="text" name="last">
+                <div class="userinfo">
+                    <div class="row justify-content-center">
+                        <h3 class='display-4'>Last Name:&nbsp;</h3>
+                        <input type="text" name="last" value="<%= UserInfo.lastName %>">
+                    </div>
                 </div>
-            </div>
 
-            <br>
+                <br>
 
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Username:&nbsp;</h3>
-                    <input type="text" name="user">
+                <div class="userinfo">
+                    <div class="row justify-content-center">
+                        <h3 class='display-4'>Username:&nbsp;</h3>
+                        <input type="text" name="user" value="<%= UserInfo.username %>">
+                    </div>
                 </div>
-            </div>
 
-            <br>
+                <br>
 
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Password:&nbsp;</h3>
-                    <input type="text" name="pass">
+                <div class="userinfo">
+                    <div class="row justify-content-center">
+                        <h3 class='display-4'>Password:&nbsp;</h3>
+                        <input type="text" name="pass" value="<%= UserInfo.password %>">
+                    </div>
                 </div>
-            </div>
+
+                <br>
+
+                <div class="userinfo">
+                    <div class="row justify-content-center">
+                        <button>Submit</button>
+                    </div>
+                </div>
+                
+            </form>
 
         </section>
 

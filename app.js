@@ -9,11 +9,17 @@ app.set('view engine', 'ejs');
 app.use(express.static('public')); // access images, css, js
 require('mongoose-currency').loadType(mongoose);
 var Currency = mongoose.Types.Currency;
+mongoose.set('useFindAndModify', false); // avoid deprecated warning
+
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 
-let currentUser = '5f755cafa0381c467432605b'; // Will track the user that is logged in
+let currentUser = "5f755cafa0381c467432605b"; // Will track the user that is logged in
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -243,7 +249,7 @@ app.get('/profile', function (req, res) {
   }
 }); // User Profile Page
 
-app.get('/updateUser', function (req, res) {
+app.get('/updateProfile/:id', function (req, res) {
   const id = currentUser;
   if (id != "") {
     Customer.findById(id)
@@ -259,4 +265,17 @@ app.get('/updateUser', function (req, res) {
   } else {
     res.redirect('/');
   }
-}); // User Profile Page
+}); // Update User's Profile Page
+
+app.put('/profile/update/:id', (req, res) => {
+  Customer.findByIdAndUpdate(currentUser, {
+    firstName: req.body.first,
+    lastName: req.body.last,
+    username: req.body.user,
+    password: req.body.pass
+  }).then((result) => {
+    res.redirect('/profile');
+  }).catch((error) => {
+    console.log(error);
+  })
+}); // Updates database with new changes
