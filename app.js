@@ -174,6 +174,39 @@ app.get('/', function (_req, res) {
 
 app.get('/search', function(req, res) {
 
+  var id = currentUser
+  if (id == '') {
+    console.log('no username')
+    id = 'Guest'
+  } else {
+    Customer.findById(id).then((result) => {
+      id = result.username
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  var search = replaceAll(req._parsedUrl.query, {'%20': ' '})
+  Product.find({name: RegExp(search, 'gi') }).then((result) => {
+    console.log(result)
+    res.render('search_product', {
+      Username: id,
+      Search: search,
+      Movie: result
+    })
+  })
+})
+
+// replaces values that are put in given map
+function replaceAll(string, mapObj) {
+  var regex = new RegExp(Object.keys(mapObj).join("|"),"gi");
+  return string.replace(regex, function(matched) {
+      return mapObj[matched.toLowerCase()];
+  });
+}
+
+app.get('/get_movie', function(req, res) {
+
   var id = currentUser;
   if (id == '') {
     console.log('no username')
@@ -186,9 +219,9 @@ app.get('/search', function(req, res) {
     })
   }
 
-  var url = req._parsedUrl.query
+  var product_query = req._parsedUrl.query
 
-  Product.findById(url)
+  Product.findById(product_query)
     .then((result) => {
       res.render('product_details', {
         Movie: result,
@@ -199,7 +232,6 @@ app.get('/search', function(req, res) {
       console.log(error)
       res.redirect('/')
     });
-
 });
 
 app.get('/create_account', function (req, res) {
