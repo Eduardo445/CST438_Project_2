@@ -40,6 +40,7 @@ const Product = require('./models/product');
 // Will track the user that is logged in
 let currentUser = ""; 
 
+
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
 mongoose
@@ -207,7 +208,8 @@ app.get('/', function (req, res) {
 }); // Home page
 
 function getMovies(res, person) {
-  Product.find()
+  
+  Product.find().limit(7)
   .then((result) => {
     var movie_names = [];
     result.forEach(function (movie_name) {
@@ -260,7 +262,7 @@ function replaceAll(string, mapObj) {
 }
 
 app.get('/get_movie', function(req, res) {
-
+  activeUser(req)
   var id = currentUser;
   if (id == '') {
     console.log('no username')

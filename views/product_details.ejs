@@ -12,7 +12,7 @@
 
   <div class="container" style="margin-top: 3em;">
     <div class="row justify-content-start">
-      <div class="col col-lg-6">
+      <div class="col col-lg-6" style="margin-top: 2em;">
         <img src="<%= Movie.poster %>">
       </div>
       <div class="col-6" style="margin-top: 2em;">
@@ -25,15 +25,17 @@
           <%= n %>
           <% }) %>
         </div>
+        <div style="margin-top: 2em;">
+          <button class="btn btn-outline-info" id="add_to_cart">
+            Add to cart
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="row justify-content-start" style="margin-top: 2em;">
+    <div class="row justify-content-start" style="margin-top: 1em;">
       <div class="col col-lg-1"">
-        <%  var price = Movie.price.toString()
-            var position = price.length - 2
-            var movie_price = [price.slice(0, position), '.', price.slice(position)].join('') %>
-        $<%= movie_price %>
+        $<%= (Movie.price / 100).toFixed(2) %>
       </div>
       <div class="col">
         In Stock:
@@ -41,13 +43,15 @@
       </div>
     </div>
   </div>
-
-
-
-
   <script>
-    $(document).read(function() {
-
+    $(document).ready(function() {
+      $('#add_to_cart').click(function() {
+        var movies = localStorage.getItem('movies')
+        if(movies == null) {
+          var temp = '<%= Movie._id %>'
+          console.log(temp)
+        }
+      })
     })
   </script>
 
