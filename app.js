@@ -3,21 +3,45 @@ const express = require('express');
 const { getUnpackedSettings } = require('http2');
 const { url } = require('inspector');
 const mongoose = require('mongoose');
-const { db } = require('./models/customer');
 const app = express();
+
+// Register view engine
 app.set('view engine', 'ejs');
+
+// Middleware & Static Files
 app.use(express.static('public')); // access images, css, js
+app.use(express.urlencoded({ extended: true }));
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
+// Express-Session
+var session = require('express-session');
+app.use(session({ 
+  secret: "Crazy Green",
+  rolling: true,
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 1000 * 60 * 5
+  }
+}));
+
+// Avoid deprecated warning for findByIdAndUpdate()
+mongoose.set('useFindAndModify', false); 
+
+// Mongoose-Currency (if needed here, else cut it in the end)
 require('mongoose-currency').loadType(mongoose);
 var Currency = mongoose.Types.Currency;
 
+// Models from our Database
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 
-let currentUser = '5f755cafa0381c467432605b'; // Will track the user that is logged in
+// Will track the user that is logged in
+let currentUser = ""; 
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
-
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) =>
@@ -28,6 +52,7 @@ mongoose
   )
   .catch((err) => console.log(err));
 
+// Start of our Routes
 app.get('/add-customer', (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
@@ -139,40 +164,69 @@ function getPass(result) {
   console.log(result.password);
 }
 
-app.get('/', function (_req, res) {
+app.get('/create_account', function (req, res) {
+  res.render('create_account', {
+    Username: 'guest',
+  });
+});
 
+app.get('/cart', function (req, res) {
+  // res.render("index.ejs");
+  res.send('It works recent!');
+}); //root
+
+app.get('/shop', function (req, res) {
+  // res.render("index.ejs");
+  res.send('implement shopping cart!');
+}); //root
+
+/**
+ * Anything Below this comment is a working route page.
+ * Any of the above routers are working examples for ideas on how to use.
+ */
+
+ function activeUser(req) {
+   if (!req.session.authenticated) {
+     currentUser = "";
+   }
+ } // Checks for user inactivity
+
+app.get('/', function (req, res) {
+  activeUser(req);
   var id = currentUser;
   if (id == '') {
     console.log('no username')
-    id = 'Guest'
+    getMovies(res, 'Guest');
   } else {
     Customer.findById(id).then((result) => {
-      id = result.username
+      getMovies(res, result.username);
     }).catch((error) => {
       console.log(error)
     })
   }
+}); // Home page
 
-  // get movies from DB
+function getMovies(res, person) {
   Product.find()
-    .then((result) => {
-      var movie_names = [];
-      result.forEach(function (movie_name) {
-        movie_names.push(movie_name.name);
-      });
-
-      res.render('home', {
-        Username: id,
-        MovieObject: result,
-        MovieNames: movie_names,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
+  .then((result) => {
+    var movie_names = [];
+    result.forEach(function (movie_name) {
+      movie_names.push(movie_name.name);
     });
-});
+
+    res.render('home', {
+      Username: person,
+      MovieObject: result,
+      MovieNames: movie_names,
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}  // Get movies from DB
 
 app.get('/search', function(req, res) {
+  activeUser(req);
 
   var id = currentUser
   if (id == '') {
@@ -234,30 +288,35 @@ app.get('/get_movie', function(req, res) {
     });
 });
 
-app.get('/create_account', function (req, res) {
-  res.render('create_account', {
-    Username: 'guest',
-  });
-});
-
 app.get('/login', function (req, res) {
-  // res.render("index.ejs");
   res.render('login', {
-    Username: 'guest',
+    Username: 'Guest',
   });
-}); //root
+}); // Login Page
 
-app.get('/cart', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works recent!');
-}); //root
+app.post('/check', function(req, res) {
+  Customer.findOne({ username: req.body.username, password: req.body.password })
+  .then((result) => {
+    currentUser = result.id;
+    req.session.authenticated = true;
+    res.send({ "check": true });
+  })
+  .catch((error) => {
+    console.log(error);
+    res.send(false);
+  });
+}); // Login checking process
 
-app.get('/shop', function (req, res) {
-  // res.render("index.ejs");
-  res.send('implement shopping cart!');
-}); //root
+app.get("/logout", function(req, res){
+  if (currentUser != "") {
+    currentUser = "";
+    req.session.destroy();
+    res.redirect('/');
+  }
+}); // Log the user out
 
 app.get('/profile', function (req, res) {
+  activeUser(req);
   const id = currentUser;
   if (id != '') {
     Customer.findById(id)
@@ -275,7 +334,8 @@ app.get('/profile', function (req, res) {
   }
 }); // User Profile Page
 
-app.get('/updateUser', function (req, res) {
+app.get('/profile/update/:id', function (req, res) {
+  activeUser(req);
   const id = currentUser;
   if (id != "") {
     Customer.findById(id)
@@ -291,4 +351,25 @@ app.get('/updateUser', function (req, res) {
   } else {
     res.redirect('/');
   }
-}); // User Profile Page
+}); // Update User's Profile Page
+
+app.put('/profile/update/:id', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    Customer.findByIdAndUpdate(currentUser, {
+      firstName: req.body.first,
+      lastName: req.body.last,
+      username: req.body.user,
+      password: req.body.pass
+    })
+    .then((result) => {
+      res.redirect('/profile');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  } else {
+    res.redirect('/');
+  }
+}); // Updates database with new changes
