@@ -26,7 +26,10 @@
                     <th scope="row"> <%= i + 1 %></th>
                     <td> <img src="<%= Movie[i].poster %>" /></td>
                     <td style="font-style: italic; font-weight: bold;">
-                        <%= Movie[i].name %><br><br>
+                      <a href='get_movie?<%= Movie[i]._id %>' style="color: currentColor">
+                        <%= Movie[i].name %>
+                      </a>
+                      <br><br>
                         <div style="font-style: normal; font-weight: lighter;">
                             <%- Movie[i].summary %>
                         </div>
