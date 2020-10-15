@@ -51,14 +51,21 @@
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <input
+        id="search"
         class="form-control mr-sm-2"
-        type="search"
         placeholder="Search"
         aria-label="Search"
       />
-      <button class="btn btn-outline-info my-2 my-sm-0" type="submit">
+      <button class="btn btn-outline-info" id="submit">
         Search
       </button>
     </form>
+    <script>
+      $('#submit').click(function(e) {
+        e.preventDefault()
+        var term = $('#search').val()
+        window.location.href="search?" + term
+      })
+    </script>
   </div>
 </nav>
