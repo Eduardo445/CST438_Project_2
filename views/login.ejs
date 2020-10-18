@@ -5,19 +5,40 @@
         <!-- <link rel='stylesheet' type='text/css' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
         <link rel='stylesheet' type='text/css' href='/css/styles.css'> -->
     
+        <script>
+            $(document).ready(function(){
+                $("#loginBtn").on("click", function() {
+                    $.ajax({
+                        method: "post",
+                        url: "/check",
+                        dataType: "json",
+                        data: { "username": $("#username").val(),
+                                "password": $("#password").val() },
+                        success: function(result, status) {
+                            if (!result) {
+                                alert("Wrong credentials!");
+                            } else {
+                                location.href = "/";
+                            }
+                        }
+                    }); // ajax
+                }); // click
+            }); // document.ready
+        </script>
+    
     </head>
     <%- include('./partials/nav'); %>
     <body class="register_body"></body>
         <div class='container center'>
                 <h1 class="monospace"> Login Page </h1> <br><br>
             
-                <form class= "elegant-lightback container" action="/login" method='POST'>
+                <!-- <form class= "elegant-lightback container" action="" method='POST'> -->
                     <div class='form-group row'></div>
 
                     <div class='form-group row'>
                         <label for='username' class='col-sm-4 col-form-label'>Username:</label>
                         <div class='col-sm-4'>
-                            <input type='text' class='form-control' id='username' name="username" required>
+                            <input type='text' class='form-control' id='username' required>
                         </div>
                     </div>
 
@@ -26,10 +47,7 @@
                     <div class='form-group row'>
                         <label for='password' class='col-sm-4 col-form-label'>Password:</label>
                         <div class='col-sm-4'>
-                            <input type='password' class='form-control' id='password' name="password" required>
-                            <% if(Valid != undefined && !Valid) { %>
-                                <p style="color:red;font-size:1.5em;"> Login Failed </p>				
-                        <% } %>
+                            <input type='password' class='form-control' id='password' required>
                         </div>
                     </div>
 
@@ -38,10 +56,10 @@
                     <div class='form-group row'>
                         <div class='col-sm-4'></div>
                         <div class='col-sm-4'>
-                            <button class='cool btn btn-primary btn-block'>login</button>
+                            <button class='cool btn btn-primary btn-block' id="loginBtn">Log In</button>
                         </div>
                     </div>
-                </form>
+                <!-- </form> -->
             </div>
         </div>
     </body>
