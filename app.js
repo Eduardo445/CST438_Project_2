@@ -164,11 +164,7 @@ function getPass(result) {
   console.log(result.password);
 }
 
-app.get('/create_account', function (req, res) {
-  res.render('create_account', {
-    Username: 'guest',
-  });
-});
+
 
 app.get('/cart', function (req, res) {
   // res.render("index.ejs");
@@ -314,6 +310,51 @@ app.get("/logout", function(req, res){
     res.redirect('/');
   }
 }); // Log the user out
+
+app.get('/create_account', function (req, res) {
+  res.render('create_account', {
+    Username: 'guest',
+    taken: false
+  });
+}); //create account page
+
+app.post('/create_account', function (req, res) {
+
+  user = req.body.username;
+  password = req.body.password;
+  var first_name = req.body.first_name;
+  var last_name = req.body.last_name;
+  Customer.findOne({ username: req.body.username })
+    .then((result) => {
+      if(result == null){
+        var newcust = new Customer();
+        newcust.username = user;
+        newcust.password = password;
+        newcust.firstName = first_name;
+        newcust.lastName = last_name;
+        newcust.totalSpent = 0;
+
+        newcust.save(function(error, savedUder){
+          if(error) {
+            console.log(error);
+            return res.status(500).send();
+          }
+          console.log("user added successfully")
+        });
+        res.redirect('/login');
+      }
+      else if (user == result.username){
+        res.render('create_account', {
+            Username: 'guest',
+            taken: true
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+}); //create account page logic
 
 app.get('/profile', function (req, res) {
   activeUser(req);
