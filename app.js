@@ -16,7 +16,7 @@ app.use(methodOverride('_method'));
 
 // Express-Session
 var session = require('express-session');
-app.use(session({ 
+app.use(session({
   secret: "Crazy Green",
   rolling: true,
   saveUninitialized: false,
@@ -27,7 +27,7 @@ app.use(session({
 }));
 
 // Avoid deprecated warning for findByIdAndUpdate()
-mongoose.set('useFindAndModify', false); 
+mongoose.set('useFindAndModify', false);
 
 // Mongoose-Currency (if needed here, else cut it in the end)
 require('mongoose-currency').loadType(mongoose);
@@ -38,7 +38,7 @@ const Customer = require('./models/customer');
 const Product = require('./models/product');
 
 // Will track the user that is logged in
-let currentUser = ""; 
+let currentUser = "";
 
 
 // Connect to mongodb
@@ -196,7 +196,6 @@ app.get('/', function (req, res) {
   activeUser(req);
   var id = currentUser;
   if (id == '') {
-    console.log('no username')
     getMovies(res, 'Guest');
   } else {
     Customer.findById(id).then((result) => {
@@ -208,7 +207,7 @@ app.get('/', function (req, res) {
 }); // Home page
 
 function getMovies(res, person) {
-  
+
   Product.find().limit(7)
   .then((result) => {
     var movie_names = [];
@@ -232,7 +231,6 @@ app.get('/search', function(req, res) {
 
   var id = currentUser
   if (id == '') {
-    console.log('no username')
     id = 'Guest'
   } else {
     Customer.findById(id).then((result) => {
@@ -244,7 +242,6 @@ app.get('/search', function(req, res) {
 
   var search = replaceAll(req._parsedUrl.query, {'%20': ' '})
   Product.find({name: RegExp(search, 'gi') }).then((result) => {
-    console.log(result)
     res.render('search_product', {
       Username: id,
       Search: search,
@@ -265,7 +262,6 @@ app.get('/get_movie', function(req, res) {
   activeUser(req)
   var id = currentUser;
   if (id == '') {
-    console.log('no username')
     id = 'Guest'
   } else {
     Customer.findById(id).then((result) => {
@@ -310,6 +306,7 @@ app.post('/check', function(req, res) {
 }); // Login checking process
 
 app.get("/logout", function(req, res){
+  localStorage.clear()
   if (currentUser != "") {
     currentUser = "";
     req.session.destroy();

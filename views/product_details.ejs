@@ -25,10 +25,18 @@
           <%= n %>
           <% }) %>
         </div>
-        <div style="margin-top: 2em;">
+        <div class='row' style="margin-top: 2em; margin-left: 1em;">
           <button class="btn btn-outline-info" id="add_to_cart">
             Add to cart
           </button>
+          <div style="margin-left: 1em;">
+            Qty:
+          </div>
+          <div>
+            <div class="pass-quantity col-5">
+              <input id='input' class="form-control" type="number" value="1" min="1">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -45,13 +53,48 @@
   </div>
   <script>
     $(document).ready(function() {
+
+      var max_chars = 2;
+      $('#input').keydown( function(e){
+          if ($(this).val().length >= max_chars) {
+              $(this).val($(this).val().substr(0, max_chars));
+          }
+      });
+
+      $('#input').keyup( function(e){
+          if ($(this).val().length >= max_chars) {
+              $(this).val($(this).val().substr(0, max_chars));
+          }
+      });
+
+      $('.pass-quantity input').change(function(e) {
+        if ($(this).val().length >= max_chars) {
+              $(this).val($(this).val().substr(0, max_chars));
+          }
+      })
+
+      var quantity = 0
+
       $('#add_to_cart').click(function() {
-        var movies = localStorage.getItem('movies')
-        if(movies == null) {
-          var temp = '<%= Movie._id %>'
-          console.log(temp)
+
+        quantity = $('.pass-quantity input').val()
+        console.log(quantity)
+
+        if(quantity < '<%= Movie.stock %>') {
+          var movies = localStorage.getItem('movies')
+          var current_movie = '<%= Movie._id %> '
+          if(movies === null) {
+            localStorage.setItem('movies', current_movie)
+          } else {
+            localStorage.setItem('movies', movies + current_movie)
+          }
+          console.log(localStorage.getItem('movies'))
+
+        } else {
+          alert('TEMP // Please lower quantity')
         }
       })
+
     })
   </script>
 
