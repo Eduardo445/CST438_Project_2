@@ -164,10 +164,107 @@ function getPass(result) {
   console.log(result.password);
 }
 
+app.get('/login', function (req, res) {
+  res.render('login', {
+    Username: 'Guest',
+    Valid: true
+  });
+});
+
+app.post('/login', function (req, res) {
+  user = req.body.username;
+  password = req.body.password;
+
+  
+  Customer.findOne({ username: req.body.username })
+    .then((result) => {
+      if(result == null){
+        res.render('login', {
+          Username: 'Guest',
+          Valid: false
+        });
+      }
+      else if (user == result.username && password == result.password){
+        res.redirect('/');
+      }
+      else{
+        res.render('login', {
+          Username: 'Guest',
+          Valid: false
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 app.get('/create_account', function (req, res) {
   res.render('create_account', {
     Username: 'guest',
+    taken: false
   });
+});
+
+app.post('/create_account', function (req, res) {
+
+  user = req.body.username;
+  password = req.body.password;
+  var first_name = req.body.first_name;
+  var last_name = req.body.last_name;
+  Customer.findOne({ username: req.body.username })
+    .then((result) => {
+      if(result == null){
+        var newcust = new Customer();
+        newcust.username = user;
+        newcust.password = password;
+        newcust.firstName = first_name;
+        newcust.lastName = last_name;
+        newcust.totalSpent = 0;
+
+        newcust.save(function(error, savedUder){
+          if(error) {
+            console.log(error);
+            return res.status(500).send();
+          }
+          console.log("user added successfully")
+        });
+        res.redirect('/login');
+      }
+      else if (user == result.username){
+        res.render('create_account', {
+            Username: 'guest',
+            taken: true
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    // if(found){
+    //   res.render('create_account', {
+    //     Username: 'guest',
+    //     taken: true
+    //   });
+    // }
+    // if(!found){
+    //   var newcust = new Customer();
+    //   newcust.username = user;
+    //   newcust.password = password;
+    //   newcust.firstName = first_name;
+    //   newcust.lastName = last_name;
+    //   newcust.totalSpent = 0;
+
+    //   newcust.save(function(error, savedUder){
+    //     if(error) {
+    //       console.log(error);
+    //       return res.status(500).send();
+    //     }
+    //     console.log("user added successfully")
+    //   });
+    //   res.redirect('/login');
+    // }
 });
 
 app.get('/cart', function (req, res) {
@@ -288,11 +385,7 @@ app.get('/get_movie', function(req, res) {
     });
 });
 
-app.get('/login', function (req, res) {
-  res.render('login', {
-    Username: 'Guest',
-  });
-}); // Login Page
+ // Login Page
 
 app.post('/check', function(req, res) {
   Customer.findOne({ username: req.body.username, password: req.body.password })
