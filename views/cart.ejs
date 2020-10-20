@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head'); %>
+    <script>
+      $(document).ready(function () {
+        $(".deleteBtn").on("click", function () {
+          $("#_METHOD").val("DELETE");
+          $.ajax({
+            method: "post",
+            url: "/cart/remove/" + $(this).prevAll('.id').val() + "?_method=DELETE",
+            dataType: "json",
+            data: {
+              "_METHOD": $("#_METHOD").val(),
+              "id": $(this).prevAll('.id').val()
+            },
+            success: function (result, status) {
+              if (!result.check) {
+                alert("Unable to delete from cart!");
+              } else {
+                location.reload();
+              }
+            }
+          }); // ajax
+        }); // Delete click
+
+        $(".addBtn").on("click", function () {
+          $("#_METHOD").val("PUT");
+          $.ajax({
+            method: "post",
+            url: "/cart/add/" + $(this).prevAll('.id').val() + "?_method=PUT",
+            dataType: "json",
+            data: {
+              "_METHOD": $("#_METHOD").val(),
+              "id": $(this).prevAll('.id').val()
+            },
+            success: function (result, status) {
+              if (!result) {
+                alert("Unable to add to cart!  You have reached our stock limit!");
+              } else {
+                location.reload();
+              }
+            }
+          }); // ajax
+        }); // Add click
+
+        $(".subBtn").on("click", function () {
+          $("#_METHOD").val("PUT");
+          $.ajax({
+            method: "post",
+            url: "/cart/sub/" + $(this).prevAll('.id').val() + "?_method=PUT",
+            dataType: "json",
+            data: {
+              "_METHOD": $("#_METHOD").val(),
+              "id": $(this).prevAll('.id').val()
+            },
+            success: function (result, status) {
+              if (!result) {
+                alert("Unable to subtract from cart!");
+              } else {
+                location.reload();
+              }
+            }
+          }); // ajax
+        }); // Sub click
+      }); // document.ready
+    </script>
+  </head>
+  <%- include('./partials/nav'); %>
+  <body>
+    <div id='title' class="container" style="margin-top: 3em;">
+      <div class="row justify-content-center">
+        <h1 class="display-4">Cart<h1>
+      </div>
+    </div>
+    <div class="container" style="justify-content: center; margin-top: 3em;">
+      <input type="hidden" class="_METHOD" value="SOMETHING">
+      <table class="table table-bordered table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Poster</th>
+            <th scope="col">Purchase Details</th>
+            <th scope="col">Options</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: x-large;">
+          <% for(var i = 0; i < Items.length; i++) { %>
+          <tr>
+            <th scope="row"><%= i + 1 %></th>
+            <td>
+              <img src="<%= Items[i].poster %>" />
+            </td>
+            <td style="font-style: italic; font-weight: bold;">
+              <a href='get_movie?<%= Items[i].id %>' style="color: currentColor">
+                <%= Items[i].name %>
+              </a>
+              <br><br>
+              <div style="font-style: normal; font-weight: lighter;">
+                $<%= (Items[i].price / 100).toFixed(2) %> x
+                <%= Items[i].amount %> =
+                $<%= ((Items[i].price / 100) * Items[i].amount).toFixed(2) %>
+              </div>
+            </td>
+            <td>
+              <input type="hidden" name="id" class="id" value="<%= Items[i].id %>">
+              <button type="button" class="addBtn">Add</button>
+              <button type="button" class="subBtn">Sub</button>
+              <button type="button" class="deleteBtn">Delete</button>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="row justify-content-center">
+        <h3 class='display-4'>Subtotal:&nbsp;$<%= Subtotal %></h3>
+      </div>
+    </div>
+  </body>
+  <%- include('./partials/footer'); %>
+</html>

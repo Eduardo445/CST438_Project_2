@@ -4,45 +4,44 @@
     <%- include('./partials/head'); %>
   </head>
   <%- include('./partials/nav'); %>
-  <!-- jumbotron -->
-  <div style="background: transparent !important" class="jumbotron">
-    <h1 class="display-4">Welcome to Movie Store</h1>
-    <p class="lead">We sell lots of movies. Pick your favorite</p>
-    <hr class="my-4" />
-  </div>
-
-  <div class="container">
-    <div class="row justify-content-center">
-      <h1 class="display-4">Featured Movies</h1>
+  <body>
+    <div style="background: transparent !important" class="jumbotron">
+      <h1 class="display-4">Welcome to Movie Store</h1>
+      <p class="lead">We sell lots of movies. Pick your favorites!</p>
+      <hr class="my-4" />
     </div>
-  </div>
-
-  <!-- featured movies -->
-  <section class="movie-list">
-    <!-- movies added (dynamic) -->
-    <% for(var i = 0; i < MovieObject.length; i++) { %>
-    <article class="card">
-      <header class="movie-header">
-        <p><%= MovieObject[i].release %></p>
-        <h2>
-          <a href="get_movie?<%= MovieObject[i]._id %>" style="color: currentColor">
-            <%= MovieObject[i].name %>
-          </a>
-        </h2>
-      </header>
-      <div class="movie-image">
-        <a class="movie-poster">
-          <!-- size is 184 x 273 -->
-          <img src="<%= MovieObject[i].poster %>" />
-        </a>
+    <div class="container">
+      <div class="row justify-content-center">
+        <h1 class="display-4">Featured Movies</h1>
       </div>
-      <div class="tags">
-        <a><%= MovieObject[i].categories[0] %></a>
-        <a><%= MovieObject[i].categories[1] %></a>
-        <a><%= MovieObject[i].categories[2] %></a>
-      </div>
-    </article>
-    <% } %>
-  </section>
+    </div>
+    <!-- featured movies -->
+    <section class="movie-list">
+      <!-- movies added (dynamic) -->
+      <% for(var i = 0; i < MovieObject.length; i++) { %>
+        <article class="card">
+          <header class="movie-header">
+            <p><%= MovieObject[i].release %></p>
+            <h2>
+              <a href="get_movie?<%= MovieObject[i]._id %>" style="color: currentColor">
+                <%= MovieObject[i].name %>
+              </a>
+            </h2>
+          </header>
+          <div class="movie-image">
+            <a class="movie-poster">
+              <!-- size is 184 x 273 -->
+              <img src="<%= MovieObject[i].poster %>" />
+            </a>
+          </div>
+          <div class="tags">
+            <a><%= MovieObject[i].categories[0] %></a>
+            <a><%= MovieObject[i].categories[1] %></a>
+            <a><%= MovieObject[i].categories[2] %></a>
+          </div>
+        </article>
+      <% } %>
+    </section>
+  </body>
   <%- include('./partials/footer'); %>
 </html>
