@@ -9,16 +9,8 @@ h1 {
     font-family: 'Oswald', sans-serif;
 }
 
-h1:hover {
-    color: red;
-}
-
 h2 {
     font-family: 'Oswald', sans-serif;
-}
-
-h2:hover {
-    color: red;
 }
 
 header, figure, nav, footer {

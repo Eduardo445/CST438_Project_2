@@ -1,69 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <%- include('./partials/head'); %>
-    </head>
-    <%- include('./partials/nav'); %>
-    <body>
-        <!-- jumbotron -->
-        <div style='background:transparent !important' class="jumbotron">
-            <h1 class="display-4"> <%= Username %>'s Profile </h1>
-            <p class="lead">
-                Here is the information about your account with our Store!
-            </p>
-            <hr class="my-4" />
+  <head>
+    <%- include('./partials/head'); %>
+  </head>
+  <%- include('./partials/nav'); %>
+  <body>
+    <div style='background:transparent !important' class="jumbotron">
+      <h1 class="display-4"><%= Username %>'s Profile</h1>
+      <p class="lead">
+        Here is the information about your account with our Store!
+      </p>
+      <hr class="my-4" />
+    </div>
+    <section class="user-info">
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <h3 class='display-4'>First Name:&nbsp;<%= UserInfo.firstName %></h3>
         </div>
-
-        <!-- User Info -->
-        <section class="user-info">
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>First Name:&nbsp;<%= UserInfo.firstName %></h3>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Last Name:&nbsp;<%= UserInfo.lastName %></h3>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Username:&nbsp;<%= UserInfo.username %></h3>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Password:&nbsp;<%= UserInfo.password %></h3>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <h3 class='display-4'>Total Spent:&nbsp;$<%= (UserInfo.totalSpent / 100).toFixed(2) %></h3>
-                </div>
-            </div>
-            
-            <br>
-
-            <div class="userinfo">
-                <div class="row justify-content-center">
-                    <a href="/profile/update/<%= UserInfo._id %>">
-                        <button>Update</button>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </body>
-    <%- include('./partials/footer'); %>
+      </div>
+      <br>
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <h3 class='display-4'>Last Name:&nbsp;<%= UserInfo.lastName %></h3>
+        </div>
+      </div>
+      <br>
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <h3 class='display-4'>Username:&nbsp;<%= UserInfo.username %></h3>
+        </div>
+      </div>
+      <br>
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <h3 class='display-4'>Password:&nbsp;<%= UserInfo.password %></h3>
+        </div>
+      </div>
+      <br>
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <h3 class='display-4'>Total Spent:&nbsp;$<%= (UserInfo.totalSpent / 100).toFixed(2) %></h3>
+        </div>
+      </div>
+      <br>
+      <div class="userinfo">
+        <div class="row justify-content-center">
+          <a href="/profile/update/<%= UserInfo._id %>">
+            <button>Update</button>
+          </a>
+        </div>
+      </div>
+    </section>
+  </body>
+  <%- include('./partials/footer'); %>
 </html>

@@ -29,17 +29,18 @@ app.use(session({
 // Avoid deprecated warning for findByIdAndUpdate()
 mongoose.set('useFindAndModify', false);
 
-// Mongoose-Currency (if needed here, else cut it in the end)
-require('mongoose-currency').loadType(mongoose);
-var Currency = mongoose.Types.Currency;
-
 // Models from our Database
 const Customer = require('./models/customer');
 const Product = require('./models/product');
+const { ObjectId } = require('mongodb');
 
 // Will track the user that is logged in
 let currentUser = "";
+let guestName = 'Guest';
 
+// Track the user's cart and subtotal
+let cartItems = [];
+let subTotal = 0;
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -58,8 +59,9 @@ app.get('/add-customer', (req, res) => {
   const customer = new Customer({
     firstName: 'Eduardos',
     lastName: 'Soto',
-    username: 'Test',
-    password: 'count#',
+    username: 'f',
+    password: 'f',
+    totalSpent: 0
   });
 
   customer
@@ -94,34 +96,11 @@ app.get('/addMovies', (req, res) => {
     });
 });
 
-app.get('/all-customers', (req, res) => {
-  Product.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get('/single-customer', (req, res) => {
-  Customer.findById('5f755cafa0381c467432605b')
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
 app.get('/customer-firstname', (req, res) => {
   Customer.findOne({ firstName: 'Eduardo' })
     .then((result) => {
       res.send(result);
-      // console.log(result);
       currentUser = result;
-      getName(result);
-      getPass(result);
       console.log(currentUser.firstName);
     })
     .catch((err) => {
@@ -157,30 +136,6 @@ app.get('/update-customer', function (req, res) {
     });
 });
 
-function getName(result) {
-  console.log(result.lastName);
-}
-
-function getPass(result) {
-  console.log(result.password);
-}
-
-app.get('/create_account', function (req, res) {
-  res.render('create_account', {
-    Username: 'guest',
-  });
-});
-
-app.get('/cart', function (req, res) {
-  // res.render("index.ejs");
-  res.send('It works recent!');
-}); //root
-
-app.get('/shop', function (req, res) {
-  // res.render("index.ejs");
-  res.send('implement shopping cart!');
-}); //root
-
 /**
  * Anything Below this comment is a working route page.
  * Any of the above routers are working examples for ideas on how to use.
@@ -189,26 +144,14 @@ app.get('/shop', function (req, res) {
  function activeUser(req) {
    if (!req.session.authenticated) {
      currentUser = "";
+     cartItems = [];
+     guestName = 'Guest';
+     subTotal = 0;
    }
  } // Checks for user inactivity
 
 app.get('/', function (req, res) {
-  activeUser(req);
-  var id = currentUser;
-  if (id == '') {
-    getMovies(res, 'Guest');
-  } else {
-    Customer.findById(id).then((result) => {
-      getMovies(res, result.username);
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-}); // Home page
-
-function getMovies(res, person) {
-
-  Product.find().limit(7)
+  Product.find()
   .then((result) => {
     var movie_names = [];
     result.forEach(function (movie_name) {
@@ -216,7 +159,7 @@ function getMovies(res, person) {
     });
 
     res.render('home', {
-      Username: person,
+      Username: guestName,
       MovieObject: result,
       MovieNames: movie_names,
     });
@@ -224,71 +167,56 @@ function getMovies(res, person) {
   .catch((err) => {
     console.log(err);
   });
-}  // Get movies from DB
+}); // Home page
 
 app.get('/search', function(req, res) {
-  activeUser(req);
-
-  var id = currentUser
-  if (id == '') {
-    id = 'Guest'
-  } else {
-    Customer.findById(id).then((result) => {
-      id = result.username
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-
   var search = replaceAll(req._parsedUrl.query, {'%20': ' '})
-  Product.find({name: RegExp(search, 'gi') }).then((result) => {
+  Product.find({name: RegExp(search, 'gi') })
+  .then((result) => {
     res.render('search_product', {
-      Username: id,
+      Username: guestName,
       Search: search,
       Movie: result
-    })
+    });
   })
-})
+  .catch((error) => {
+    console.log(error);
+  });
+}); // Search for movies based on search bar input
 
-// replaces values that are put in given map
 function replaceAll(string, mapObj) {
   var regex = new RegExp(Object.keys(mapObj).join("|"),"gi");
   return string.replace(regex, function(matched) {
-      return mapObj[matched.toLowerCase()];
+    return mapObj[matched.toLowerCase()];
   });
-}
+} // replaces values that are put in given map
 
 app.get('/get_movie', function(req, res) {
-  activeUser(req)
-  var id = currentUser;
-  if (id == '') {
-    id = 'Guest'
-  } else {
-    Customer.findById(id).then((result) => {
-      id = result.username
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-
   var product_query = req._parsedUrl.query
-
   Product.findById(product_query)
     .then((result) => {
       res.render('product_details', {
-        Movie: result,
-        Username: id
-      })
-
+        Username: guestName,
+        Amount: getProductAmount(result),
+        Movie: result
+      });
     }).catch((error) => {
       console.log(error)
       res.redirect('/')
     });
-});
+}); // Directs to the product details page
+
+function getProductAmount(res) {
+  const item = cartItems.find(c => c.id == res.id);
+  if (item != null) {
+    return item.amount;
+  }
+  return 0;
+} // Returns the amount of the product based on cart
 
 app.get('/login', function (req, res) {
   res.render('login', {
-    Username: 'Guest',
+    Username: guestName,
   });
 }); // Login Page
 
@@ -296,6 +224,7 @@ app.post('/check', function(req, res) {
   Customer.findOne({ username: req.body.username, password: req.body.password })
   .then((result) => {
     currentUser = result.id;
+    guestName = result.username;
     req.session.authenticated = true;
     res.send({ "check": true });
   })
@@ -309,10 +238,58 @@ app.get("/logout", function(req, res){
   localStorage.clear()
   if (currentUser != "") {
     currentUser = "";
+    cartItems = [];
+    guestName = 'Guest';
+    subTotal = 0;
     req.session.destroy();
     res.redirect('/');
   }
 }); // Log the user out
+
+app.get('/create_account', function (req, res) {
+  res.render('create_account', {
+    Username: guestName,
+    taken: false
+  });
+}); //create account page
+
+app.post('/create_account', function (req, res) {
+
+  user = req.body.username;
+  password = req.body.password;
+  var first_name = req.body.first_name;
+  var last_name = req.body.last_name;
+  Customer.findOne({ username: req.body.username })
+    .then((result) => {
+      if(result == null){
+        var newcust = new Customer();
+        newcust.username = user;
+        newcust.password = password;
+        newcust.firstName = first_name;
+        newcust.lastName = last_name;
+        newcust.totalSpent = 0;
+
+        newcust.save(function(error, savedUder){
+          if(error) {
+            console.log(error);
+            return res.status(500).send();
+          }
+          console.log("user added successfully")
+        });
+        res.redirect('/login');
+      }
+      else if (user == result.username){
+        res.render('create_account', {
+            Username: 'guest',
+            taken: true
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+}); //create account page logic
 
 app.get('/profile', function (req, res) {
   activeUser(req);
@@ -321,7 +298,7 @@ app.get('/profile', function (req, res) {
     Customer.findById(id)
       .then((result) => {
         res.render('profile', {
-          Username: result.username,
+          Username: guestName,
           UserInfo: result,
         });
       })
@@ -340,7 +317,7 @@ app.get('/profile/update/:id', function (req, res) {
     Customer.findById(id)
     .then((result) => {
       res.render("update_profile", {
-        Username: result.username,
+        Username: guestName,
         UserInfo: result
       });
     })
@@ -372,3 +349,100 @@ app.put('/profile/update/:id', (req, res) => {
     res.redirect('/');
   }
 }); // Updates database with new changes
+
+app.post('/addCart', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    updateCart(
+      req.body.movieID,
+      req.body.movieName,
+      req.body.moviePoster,
+      parseInt(req.body.moviePrice),
+      parseInt(req.body.quantity),
+      req.body.movieStock
+    );
+    res.send({ "check": true });
+  } else {
+    res.redirect('/addCart');
+  }
+}); // Adding item to cart
+
+function updateCart(id, name, poster, price, quantity, stock) {
+  const item = cartItems.find(c => c.id == id);
+  if (item != null) {
+    subTotal += item.price * quantity;
+    item.amount += quantity;
+    console.log(item);
+  } else {
+    subTotal += price * quantity;
+    cartItems.push({ id: id, name: name, poster: poster, price: price, amount: quantity, stock: stock });
+  }
+} // Update the cart list and subtotal
+
+app.delete('/cart/remove/:id', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    const item = cartItems.find(c => c.id == req.body.id);
+    const index = cartItems.indexOf(item);
+    subTotal -= item.amount * item.price;
+    cartItems.splice(index, 1);
+    res.send({ "check": true });
+  } else {
+    res.redirect('/');
+  }
+}); // Delete item from cart
+
+app.put('/cart/add/:id', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    const item = cartItems.find(c => c.id == req.body.id);
+    if (item.amount < item.stock) {
+      subTotal += item.price;
+      item.amount++;
+      res.send({ "check": true });
+    } else {
+      res.send(false);
+    }
+  } else {
+    res.redirect('/');
+  }
+}); // Add amount of an item from cart
+
+app.put('/cart/sub/:id', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    const item = cartItems.find(c => c.id == req.body.id);
+    if (item.amount > 1) {
+      subTotal -= item.price;
+      item.amount--;
+      res.send({ "check": true });
+    } else if (item.amount == 1) {
+      const index = cartItems.indexOf(item);
+      subTotal -= item.price;
+      cartItems.splice(index, 1);
+      res.send({ "check": true });
+    }else {
+      res.send(false);
+    }
+  } else {
+    res.redirect('/');
+  }
+}); // Subtract amount of an item from cart
+
+app.get('/cart', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    res.render("cart", {
+      Username: guestName,
+      Subtotal: (subTotal / 100).toFixed(2),
+      Items: cartItems
+    });
+  } else {
+    res.redirect('/');
+  }
+}); // Cart page

@@ -2,28 +2,105 @@
 <html lang="en">
   <head>
     <%- include('./partials/head'); %>
+    <script>
+      $(document).ready(function () {
+        $("#addToCart").on("click", function () {
+          $.ajax({
+            method: "post",
+            url: "/addCart",
+            dataType: "json",
+            data: {
+              "movieID": $("#movieID").val(),
+              "movieName": $("#movieName").val(),
+              "moviePoster": $("#moviePoster").val(),
+              "moviePrice": $("#moviePrice").val(),
+              "quantity": $("#quantity").val(),
+              "movieStock": $("#movieStock").val()
+            },
+            success: function (result, status) {
+              if (!result) {
+                alert("Unable to add to Cart!");
+              } else {
+                location.href = "/";
+              }
+            }
+          }); // ajax
+        }); // Add to cart click
+
+        $("#addBtn").on("click", function () {
+          var oldVal = parseInt($("#quantity").val());
+          var newVal = oldVal + 1;
+          var limit = parseInt($("#maxStock").val());
+
+          if (newVal <= limit) {
+            $("#quantity").val(newVal);
+          }
+        }); // Add button
+
+        $("#subBtn").on("click", function () {
+          var oldVal = parseInt($("#quantity").val());
+          var newVal = oldVal - 1;
+
+          if (newVal > 0) {
+            $("#quantity").val(newVal);
+          }
+        }); // Subtract button
+      }); // document.ready
+    </script>
   </head>
   <%- include('./partials/nav'); %>
-  <div id='title' class="container" style="margin-top: 3em;">
-    <div class="row justify-content-center">
-      <h1 class="display-4"><%= Movie.name %></h1>
-    </div>
-  </div>
-
-  <div class="container" style="margin-top: 3em;">
-    <div class="row justify-content-start">
-      <div class="col col-lg-6" style="margin-top: 2em;">
-        <img src="<%= Movie.poster %>">
+  <body>
+    <div id='title' class="container" style="margin-top: 3em;">
+      <div class="row justify-content-center">
+        <h1 class="display-4"><%= Movie.name %></h1>
       </div>
-      <div class="col-6" style="margin-top: 2em;">
-        <%= Movie.description %>
-        <div style="margin-top: 2em;">
-          Released: <%= Movie.release %>
+    </div>
+    <div class="container" style="margin-top: 3em;">
+      <input id="movieID" hidden="true" value="<%= Movie._id %>">
+      <input id="movieName" hidden="true" value="<%= Movie.name %>">
+      <input id="moviePoster" hidden="true" value="<%= Movie.poster %>">
+      <input id="moviePrice" hidden="true" value="<%= Movie.price %>">
+      <input id="movieStock" hidden="true" value="<%= Movie.stock %>">
+      <div class="row justify-content-start">
+        <div class="col col-lg-6" style="margin-top: 2em;">
+          <img src="<%= Movie.poster %>">
         </div>
-        <div style="margin-top: 1em; font-style: italic;">
-          <% Movie.categories.forEach(function(n) { %>
-          <%= n %>
-          <% }) %>
+        <div class="col-6" style="margin-top: 2em;">
+          <%= Movie.description %>
+          <div style="margin-top: 2em;">
+            Released: <%= Movie.release %>
+          </div>
+          <div style="margin-top: 1em;">
+            Genres:
+            <% Movie.categories.forEach(function(n) { %>
+            <%= n %>
+            <% }) %>
+          </div>
+          <div style="margin-top: 1em;">
+            Price: $<%= (Movie.price / 100).toFixed(2) %>
+          </div>
+          <% if (Movie.stock == 0) { %>
+          <div class='row' style="margin-top: 2em; margin-left: 0em;">
+            OUT OF STOCK!!!
+          </div>
+          <% } else if (Amount == Movie.stock) { %>
+          <div class='row' style="margin-top: 2em; margin-left: 0em;">
+            YOU HAVE REACHED OUR STOCK LIMIT! GO TO CART FOR PRODUCT CHANGES!
+          </div>
+          <% } else if (Username != "Guest") { %>
+          <div class='row' style="margin-top: 2em; margin-left: 0em;">
+            <button class="btn btn-outline-info" id="addToCart">Add to cart</button>
+            <div style="margin-left: 1em;">
+              Qty:&nbsp;&nbsp;&nbsp;
+            </div>
+            <button type="button" class="btn btn-outline-info" id="subBtn"> - </button>
+            <div class="pass-quantity col-3">
+              <input id="maxStock" hidden="true" type="number" value="<%= Movie.stock - Amount %>">
+              <input id="quantity" class="form-control" type="number" value="1" disabled="false">
+            </div>
+            <button type="button" class="btn btn-outline-info" id="addBtn"> + </button>
+          </div>
+          <% } %>
         </div>
         <div class='row' style="margin-top: 2em; margin-left: 1em;">
           <button class="btn btn-outline-info" id="add_to_cart">
@@ -40,63 +117,6 @@
         </div>
       </div>
     </div>
-
-    <div class="row justify-content-start" style="margin-top: 1em;">
-      <div class="col col-lg-1"">
-        $<%= (Movie.price / 100).toFixed(2) %>
-      </div>
-      <div class="col">
-        In Stock:
-        <%= Movie.stock %>
-      </div>
-    </div>
-  </div>
-  <script>
-    $(document).ready(function() {
-
-      var max_chars = 2;
-      $('#input').keydown( function(e){
-          if ($(this).val().length >= max_chars) {
-              $(this).val($(this).val().substr(0, max_chars));
-          }
-      });
-
-      $('#input').keyup( function(e){
-          if ($(this).val().length >= max_chars) {
-              $(this).val($(this).val().substr(0, max_chars));
-          }
-      });
-
-      $('.pass-quantity input').change(function(e) {
-        if ($(this).val().length >= max_chars) {
-              $(this).val($(this).val().substr(0, max_chars));
-          }
-      })
-
-      var quantity = 0
-
-      $('#add_to_cart').click(function() {
-
-        quantity = $('.pass-quantity input').val()
-        console.log(quantity)
-
-        if(quantity < '<%= Movie.stock %>') {
-          var movies = localStorage.getItem('movies')
-          var current_movie = '<%= Movie._id %> '
-          if(movies === null) {
-            localStorage.setItem('movies', current_movie)
-          } else {
-            localStorage.setItem('movies', movies + current_movie)
-          }
-          console.log(localStorage.getItem('movies'))
-
-        } else {
-          alert('TEMP // Please lower quantity')
-        }
-      })
-
-    })
-  </script>
-
+  </body>
   <%- include('./partials/footer'); %>
 </html>
