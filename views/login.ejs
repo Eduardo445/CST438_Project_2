@@ -28,26 +28,17 @@
     
     </head>
     <%- include('./partials/nav'); %>
-    <body class="register_body"></body>
+    <body class="register_body gradient"></body>
         <div class='container center'>
-                <h1 class="monospace"> Login Page </h1> <br><br>
+            <br><br><h1 class="jumbo"> Login</h1> <br><br>
             
                 <!-- <form class= "elegant-lightback container" action="" method='POST'> -->
                     <div class='form-group row'></div>
 
                     <div class='form-group row'>
-                        <label for='username' class='col-sm-4 col-form-label'>Username:</label>
+                        <div class='col-sm-4'></div>
                         <div class='col-sm-4'>
-                            <input type='text' class='form-control' id='username' required>
-                        </div>
-                    </div>
-
-                    <div class='form-group row'></div>
-
-                    <div class='form-group row'>
-                        <label for='password' class='col-sm-4 col-form-label'>Password:</label>
-                        <div class='col-sm-4'>
-                            <input type='password' class='form-control' id='password' required>
+                            <input type='text' placeholder="Username"class='field' id='username' required>
                         </div>
                     </div>
 
@@ -56,12 +47,22 @@
                     <div class='form-group row'>
                         <div class='col-sm-4'></div>
                         <div class='col-sm-4'>
-                            <button class='cool btn btn-primary btn-block' id="loginBtn">Log In</button>
+                            <input type='password' placeholder="Password"class='field' id='password' required>
+                        </div>
+                    </div>
+
+                    <div class='form-group row'></div>
+                    <div class='form-group row'></div>
+
+                    <div class='form-group row'>
+                        <div class='col-sm-4'></div>
+                        <div class='col-sm-4'>
+                            <button class='button' id="loginBtn">Log In</button>
                         </div>
                     </div>
                 <!-- </form> -->
             </div>
-        </div>
+    
     </body>
     <%- include('./partials/footer'); %>
 </html>
