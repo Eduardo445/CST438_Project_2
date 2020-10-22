@@ -5,14 +5,14 @@
   </head>
   <%- include('./partials/nav'); %>
   <body>
-    <div style='background:transparent !important' class="jumbotron">
+    <div style='background:transparent !important' class="jumbo jumbotron">
       <h1 class="display-4">Edit <%= Username %>'s Profile</h1>
       <p class="lead">
         Here you can edit the information about your account with our Store!
       </p>
       <hr class="my-4" />
     </div>
-    <section class="user-info">
+    <section class="user-info info-card info">
       <form action="/profile/update/<%= UserInfo._id %>?_method=PUT" , method="POST">
         <input type="hidden" name="_METHOD" value="PUT">
         <div class="userinfo">
@@ -45,7 +45,7 @@
         <br>
         <div class="userinfo">
           <div class="row justify-content-center">
-            <button>Submit</button>
+            <button style="width: 25%; border-radius:30px;" class="">Submit</button>
           </div>
         </div>
       </form>
