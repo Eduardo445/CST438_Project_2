@@ -73,6 +73,25 @@
         <h1 class="display-4">Cart<h1>
       </div>
     </div>
+
+    <!-- This will be the Cart changes appearence -->
+    <% if (Notice) { %>
+      <div class="container" style="justify-content: center; margin-top: 3em;">
+        <% for(var i = 0; i < Changes.length; i++) { %>
+
+          <% if (Changes[i].reason == "Unavailable") { %>
+            <%= Changes[i].name %> has been remove from cart due to being unavailable in our stock.
+          <% } else if (Changes[i].reason == "Price") { %>
+            <%= Changes[i].name  %> movie price has change in cart to the most up-to-date price.
+          <% } else if (Changes[i].reason == "Stock") { %>
+            <%= Changes[i].name  %> quantity has change in cart to match our stock.
+          <% } %>
+
+
+        <% } %>
+      </div>
+    <% } %>
+
     <div class="container" style="justify-content: center; margin-top: 3em;">
       <input type="hidden" class="_METHOD" value="SOMETHING">
       <table class="table table-bordered table-dark">
