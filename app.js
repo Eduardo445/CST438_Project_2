@@ -238,6 +238,8 @@ app.post('/check', async function(req, res) {
       currentUser = result.id;
       guestName = result.username;
       req.session.authenticated = true;
+    } else {
+      res.send(false);
     }
     return result;
   }).then((result) => {
@@ -315,7 +317,6 @@ app.get('/create_account', function (req, res) {
 
     Username: guestName,
     taken: false,
-    Username: 'guest',
     taken: false,
     tooShort: false,
     noSpec: false,
