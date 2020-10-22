@@ -597,6 +597,35 @@ app.get('/stock', (req, res) => {
   })
 });
 
+
+app.get('/stock/add', (req, res) => {
+  activeUser(req)
+  res.render('add_product', {
+    Username: guestName
+  })
+})
+
+app.post('/stock/add', (req, res) => {
+  console.log('post method: add')
+  const new_product = new Product({
+    name: req.body.title,
+    categories: req.body.categories,
+    price: req.body.price,
+    release: req.body.release,
+    stock: req.body.stock,
+    poster: req.body.poster,
+    description: req.body.description,
+    summary: req.body.summary
+  })
+  new_product.save().then((result) => {
+    console.log(result)
+    res.send({ 'check': true })
+  }).catch((error) => {
+    console.log(error)
+  })
+})
+
+
 app.get('/stock/edit', (req, res) => {
   activeUser(req)
   var query = req._parsedUrl.query
@@ -613,7 +642,6 @@ app.get('/stock/edit', (req, res) => {
 });
 
 app.post('/stock/edit', (req, res) => {
-  activeUser(req)
   console.log('post method: edit')
   Product.findByIdAndUpdate(req.body.id, {
     name: req.body.title,
@@ -633,10 +661,4 @@ app.post('/stock/edit', (req, res) => {
 app.get('/stock/delete', (req, res) => {
   res.send('implementing delete')
 
-})
-
-
-
-app.get('/stock/add', (req, res) => {
-  res.send('implementing add')
 })
