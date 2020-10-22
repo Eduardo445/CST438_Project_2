@@ -5,6 +5,10 @@ const { url } = require('inspector');
 const mongoose = require('mongoose');
 const app = express();
 
+// Promises
+const Promise = require('bluebird');
+mongoose.Promise = Promise;
+
 // Register view engine
 app.set('view engine', 'ejs');
 
@@ -32,8 +36,7 @@ mongoose.set('useFindAndModify', false);
 // Models from our Database
 const Customer = require('./models/customer');
 const Product = require('./models/product');
-const { ObjectId } = require('mongodb');
-const { query } = require('express');
+const Cart = require('./models/cart');
 
 // Will track the user that is logged in
 let currentUser = "";
@@ -41,6 +44,7 @@ let guestName = 'Guest';
 
 // Track the user's cart and subtotal
 let cartItems = [];
+let inventoryChanges = [];
 let subTotal = 0;
 
 // Connect to mongodb
@@ -152,6 +156,7 @@ app.get('/update-customer', function (req, res) {
  } // Checks for user inactivity
 
 app.get('/', function (req, res) {
+  activeUser(req);
   Product.find()
   .then((result) => {
     var movie_names = [];
@@ -171,6 +176,7 @@ app.get('/', function (req, res) {
 }); // Home page
 
 app.get('/search', function(req, res) {
+  activeUser(req);
   var search = replaceAll(req._parsedUrl.query, {'%20': ' '})
   Product.find({name: RegExp(search, 'gi') })
   .then((result) => {
@@ -193,6 +199,7 @@ function replaceAll(string, mapObj) {
 } // replaces values that are put in given map
 
 app.get('/get_movie', function(req, res) {
+  activeUser(req);
   var product_query = req._parsedUrl.query
   Product.findById(product_query)
     .then((result) => {
@@ -216,24 +223,80 @@ function getProductAmount(res) {
 } // Returns the amount of the product based on cart
 
 app.get('/login', function (req, res) {
+  activeUser(req);
   res.render('login', {
     Username: guestName,
   });
 }); // Login Page
 
-app.post('/check', function(req, res) {
-  Customer.findOne({ username: req.body.username, password: req.body.password })
+app.post('/check', async function(req, res) {
+  activeUser(req);
+  await Customer.findOne({ username: req.body.username, password: req.body.password })
+  .exec()
   .then((result) => {
-    currentUser = result.id;
-    guestName = result.username;
-    req.session.authenticated = true;
+    if (result != null) {
+      currentUser = result.id;
+      guestName = result.username;
+      req.session.authenticated = true;
+    }
+    return result;
+  }).then((result) => {
+    if (result == null) {
+      return result;
+    }
+    return Cart.findOne({ user: currentUser }).exec();
+  }).then(async (result) => {
+    if (result != null) {
+      inventoryChanges = result.notice;
+      for (let i = 0; i < (result.item).length; i++) {
+        await Product.findById(result.item[i].id)
+        .exec()
+        .then((prod) => {
+          if (prod == null) {
+            inventoryChanges.push({
+              name: (result.item)[i].name,
+              reason: "Unavailable"
+            });
+          } else {
+            if (prod.price != (result.item)[i].price) {
+              inventoryChanges.push({
+                name: (result.item)[i].name,
+                reason: "Price"
+              });
+              (result.item)[i].price = prod.price;
+            }
+            if (prod.stock != (result.item)[i].stock) {
+              (result.item)[i].stock = prod.stock;
+            }
+            if (prod.stock < (result.item)[i].amount) {
+              inventoryChanges.push({
+                name: (result.item)[i].name,
+                reason: "Stock"
+              });
+              (result.item)[i].amount = prod.stock;
+            }
+            cartItems.push((result.item)[i]);
+            subTotal += (result.item)[i].amount * (result.item)[i].price;
+          }
+        });
+      }
+    }
+    return cartItems;
+  }).then(async (result) => {
+    await Cart.findOneAndUpdate({ user: currentUser }, {
+      item: cartItems,
+      notice: inventoryChanges
+    })
+    .exec()
+    .then((result) => {
+      // Nothing needs to happen
+    });
     res.send({ "check": true });
   })
   .catch((error) => {
     console.log(error);
-    res.send(false);
-  });
-}); // Login checking process
+  })
+}); // Login checking process and Cart check
 
 app.get("/logout", function(req, res){
   localStorage.clear()
@@ -248,6 +311,7 @@ app.get("/logout", function(req, res){
 }); // Log the user out
 
 app.get('/create_account', function (req, res) {
+  activeUser(req);
   res.render('create_account', {
     Username: guestName,
     taken: false
@@ -255,7 +319,7 @@ app.get('/create_account', function (req, res) {
 }); //create account page
 
 app.post('/create_account', function (req, res) {
-
+  activeUser(req);
   user = req.body.username;
   password = req.body.password;
   var first_name = req.body.first_name;
@@ -330,6 +394,8 @@ app.get('/profile/update/:id', function (req, res) {
   }
 }); // Update User's Profile Page
 
+
+// TODO: Username and Password check
 app.put('/profile/update/:id', (req, res) => {
   activeUser(req);
   const id = currentUser;
@@ -361,7 +427,7 @@ app.post('/addCart', (req, res) => {
       req.body.moviePoster,
       parseInt(req.body.moviePrice),
       parseInt(req.body.quantity),
-      req.body.movieStock
+      parseInt(req.body.movieStock)
     );
     res.send({ "check": true });
   } else {
@@ -374,10 +440,42 @@ function updateCart(id, name, poster, price, quantity, stock) {
   if (item != null) {
     subTotal += item.price * quantity;
     item.amount += quantity;
-    console.log(item);
+    updateDBCart();
   } else {
     subTotal += price * quantity;
-    cartItems.push({ id: id, name: name, poster: poster, price: price, amount: quantity, stock: stock });
+    newItem = {
+      id: id,
+      name: name,
+      poster: poster,
+      price: price,
+      amount: quantity,
+      stock: stock
+    };
+    cartItems.push(newItem);
+
+    Cart.findOneAndUpdate({ user: currentUser }, {
+      item: cartItems
+    })
+    .then((result) => {
+      if (result == null) {
+        const items = new Cart({
+          user: currentUser,
+          item: cartItems,
+          notice: inventoryChanges
+        })
+        .save()
+        .then((result) => {
+          console.log("Created new cart for" + guestName);
+          // Nothing needs to happen
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 } // Update the cart list and subtotal
 
@@ -389,6 +487,7 @@ app.delete('/cart/remove/:id', (req, res) => {
     const index = cartItems.indexOf(item);
     subTotal -= item.amount * item.price;
     cartItems.splice(index, 1);
+    updateDBCart();
     res.send({ "check": true });
   } else {
     res.redirect('/');
@@ -403,6 +502,7 @@ app.put('/cart/add/:id', (req, res) => {
     if (item.amount < item.stock) {
       subTotal += item.price;
       item.amount++;
+      updateDBCart();
       res.send({ "check": true });
     } else {
       res.send(false);
@@ -420,11 +520,13 @@ app.put('/cart/sub/:id', (req, res) => {
     if (item.amount > 1) {
       subTotal -= item.price;
       item.amount--;
+      updateDBCart();
       res.send({ "check": true });
     } else if (item.amount == 1) {
       const index = cartItems.indexOf(item);
       subTotal -= item.price;
       cartItems.splice(index, 1);
+      updateDBCart();
       res.send({ "check": true });
     }else {
       res.send(false);
@@ -434,15 +536,49 @@ app.put('/cart/sub/:id', (req, res) => {
   }
 }); // Subtract amount of an item from cart
 
-app.get('/cart', (req, res) => {
+function updateDBCart() {
+  Cart.findOneAndUpdate({ user: currentUser }, {
+    item: cartItems
+  })
+  .then((result) => {
+    // Nothing needs to happen
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+} // Update the DB Cart collection
+
+app.get('/cart', async (req, res) => {
   activeUser(req);
   const id = currentUser;
   if (id != "") {
-    res.render("cart", {
-      Username: guestName,
-      Subtotal: (subTotal / 100).toFixed(2),
-      Items: cartItems
-    });
+
+    if (inventoryChanges.length == 0) {
+      res.render("cart", {
+        Username: guestName,
+        Subtotal: (subTotal / 100).toFixed(2),
+        Items: cartItems,
+        Notice: false,
+        Changes: []
+      });
+    } else {
+      const tempInventoryChanges = [...inventoryChanges];
+      inventoryChanges = [];
+      await Cart.findOneAndUpdate({ user: currentUser }, {
+        notice: inventoryChanges
+      })
+      .exec()
+      .then((result) => {
+        res.render("cart", {
+          Username: guestName,
+          Subtotal: (subTotal / 100).toFixed(2),
+          Items: cartItems,
+          Notice: true,
+          Changes: tempInventoryChanges
+        });
+      });
+    }
+
   } else {
     res.redirect('/');
   }
