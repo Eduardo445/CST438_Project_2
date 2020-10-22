@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <%- include('./partials/head'); %>
+    </head>
+    <%- include('./partials/nav'); %>
+    <div id='title' class="container" style="margin-top: 3em;">
+        <div class="row justify-content-center">
+          <h1 class="display-4">Edit Movie: <%= Movie[0].name %><h1>
+        </div>
+    </div>
+    <form id='movie_object'>
+        <div class="container" style="margin-top: 3em;">
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <p class=" h2 font-weight-bold font-italic">Movie Name:</p>
+                </div>
+                <div class="col-4">
+                    <input name="title" class="form-control" type="text" placeholder="<%= Movie[0].name %>">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <p class=" h2 font-weight-bold font-italic">Price:</p>
+                </div>
+                <div class="col-4">
+                    <input name="price"class="form-control" type="number" placeholder="$<%= (Movie[0].price / 100).toFixed(2) %>">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                <p class=" h2 font-weight-bold font-italic">Release:</p>
+                </div>
+                <div class="col-4">
+                    <input name="release" class="form-control" type="text" placeholder="<%= Movie[0].release %>">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                <p class=" h2 font-weight-bold font-italic">Stock:</p>
+                </div>
+                <div class="col-4">
+                    <input name="stock" class="form-control" type="number" placeholder="<%= Movie[0].stock %>">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                <p class=" h2 font-weight-bold font-italic">Description:</p>
+                </div>
+                <div class="col-4">
+                    <input name="description" class="form-control" type="text" placeholder="<%= Movie[0].description %>">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                <p class=" h2 font-weight-bold font-italic">Summary:</p>
+                </div>
+                <div class="col-4">
+                    <input name="summary" class="form-control" type="text" placeholder="Shorter Description">
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                <p class=" h2 font-weight-bold font-italic">Poster Path:</p>
+                </div>
+                <div class="col-4">
+                    <input name="path" class="form-control" type="text" placeholder="<%= Movie[0].poster %> or URL">
+                </div>
+            </div>
+            <div class="row justify-content-center" style="margin-top: 3em;">
+                <button id="update" class="btn btn-outline-primary">
+                    Update Movie
+                </button>
+            </div>
+        </div>
+    </form>
+    <script>
+        $('#update').click(function(e) {
+            e.preventDefault()
+            console.log('PREVENTING UPDATE FOR NOW')
+            var is_valid = true
+            $('input').each(function() {
+                console.log('this is not valid')
+                is_valid = false
+            })
+
+            // $.ajax({
+            //     method: 'post',
+            //     dataType: 'JSON',
+            //     url:
+            // })
+
+
+
+        })
+    </script>
+    <%- include('./partials/footer'); %>
+</html>

@@ -33,6 +33,7 @@ mongoose.set('useFindAndModify', false);
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 const { ObjectId } = require('mongodb');
+const { query } = require('express');
 
 // Will track the user that is logged in
 let currentUser = "";
@@ -446,3 +447,46 @@ app.get('/cart', (req, res) => {
     res.redirect('/');
   }
 }); // Cart page
+
+app.get('/stock', (req, res) => {
+  activeUser(req)
+  Product.find().then((result) => {
+    res.render('stock', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+});
+
+app.put('/stock/edit/:id', (req, res) => {
+  activeUser(req)
+  console.log(req.body.id)
+  Product.find().then((result) => {
+    res.render('edit_product', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+});
+
+app.get('/stock/edit', (req, res) => {
+  activeUser(req)
+  var query = req._parsedUrl.query
+
+  Product.find({ _id: query}).then((result) => {
+    res.render('edit_product', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+
+});
