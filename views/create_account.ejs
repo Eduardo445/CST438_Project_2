@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <%- include('./partials/head'); %>
     <link rel='stylesheet' type='text/css' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
     <link rel='stylesheet' type='text/css' href='/css/styles.css'>
@@ -13,9 +13,9 @@
 <body class="register_body">
     <div class='container center'>
             <h1 class="monospace"> Register Page </h1> <br><br>
-        
+
             <form id = "reg_form" class= "elegant-lightback container" action="/create_account" method='POST'>
-                
+
                 <div class='form-group row'>
                     <label for='first_name' class='col-sm-4 col-form-label'>First Name:</label>
                     <div class='col-sm-4'>
@@ -40,7 +40,7 @@
                         <input type='text' class='form-control' id='username' name='username' required>
                     </div>
                     <% if(taken != undefined && taken) { %>
-                        <p style="color:red;font-size:1.5em;"> Username Already In Use </p>				
+                        <p style="color:red;font-size:1.5em;"> Username Already In Use </p>
                 <% } %>
                 </div>
 
@@ -66,6 +66,6 @@
     </div>
 
   <script> </script>
-  
+
 </body>
 </html>

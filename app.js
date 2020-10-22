@@ -461,20 +461,6 @@ app.get('/stock', (req, res) => {
   })
 });
 
-app.put('/stock/edit/:id', (req, res) => {
-  activeUser(req)
-  console.log(req.body.id)
-  Product.find().then((result) => {
-    res.render('edit_product', {
-      Username: guestName,
-      Movie: result
-    })
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-});
-
 app.get('/stock/edit', (req, res) => {
   activeUser(req)
   var query = req._parsedUrl.query
@@ -488,5 +474,33 @@ app.get('/stock/edit', (req, res) => {
   .catch((error) => {
     console.log(error)
   })
-
 });
+
+app.post('/stock/edit', (req, res) => {
+  activeUser(req)
+  console.log('post method: edit')
+  Product.findByIdAndUpdate(req.body.id, {
+    name: req.body.title,
+    price: req.body.price,
+    release: req.body.release,
+    stock: req.body.stock,
+    poster: req.body.poster,
+    description: req.body.description,
+    summary: req.body.summary
+  }).then((result) => {
+    console.log(result)
+    res.send({ "check": true });
+  })
+
+})
+
+app.get('/stock/delete', (req, res) => {
+  res.send('implementing delete')
+
+})
+
+
+
+app.get('/stock/add', (req, res) => {
+  res.send('implementing add')
+})
