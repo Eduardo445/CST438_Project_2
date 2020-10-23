@@ -157,7 +157,7 @@ app.get('/update-customer', function (req, res) {
 
 app.get('/', function (req, res) {
   activeUser(req);
-  Product.find()
+  Product.find().limit(6)
   .then((result) => {
     var movie_names = [];
     result.forEach(function (movie_name) {
@@ -335,7 +335,7 @@ app.post('/create_account', function (req, res) {
   var userShort = false;
   var taken = false;
 
-  
+
   user = req.body.username;
   password = req.body.password;
   var first_name = req.body.first_name;
@@ -385,7 +385,7 @@ app.post('/create_account', function (req, res) {
         });
 
       }
-          else { 
+          else {
             if (user == result.username){
               taken = true;
             }
@@ -398,8 +398,8 @@ app.post('/create_account', function (req, res) {
               userShort: userShort
             });
         }
-      
-      
+
+
     })
     .catch((err) => {
       console.log(err);
@@ -657,7 +657,6 @@ app.get('/stock/add', (req, res) => {
 })
 
 app.post('/stock/add', (req, res) => {
-  console.log('post method: add')
   const new_product = new Product({
     name: req.body.title,
     categories: req.body.categories,
@@ -669,7 +668,6 @@ app.post('/stock/add', (req, res) => {
     summary: req.body.summary
   })
   new_product.save().then((result) => {
-    console.log(result)
     res.send({ 'check': true })
   }).catch((error) => {
     console.log(error)
@@ -692,7 +690,6 @@ app.get('/stock/edit', (req, res) => {
 });
 
 app.post('/stock/edit', (req, res) => {
-  console.log('post method: edit')
   Product.findByIdAndUpdate(req.body.id, {
     name: req.body.title,
     price: req.body.price,
