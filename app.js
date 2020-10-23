@@ -157,7 +157,7 @@ app.get('/update-customer', function (req, res) {
 
 app.get('/', function (req, res) {
   activeUser(req);
-  Product.find().limit(6)
+  Product.find().limit(10)
   .then((result) => {
     var movie_names = [];
     result.forEach(function (movie_name) {
@@ -203,6 +203,7 @@ app.get('/get_movie', function(req, res) {
   var product_query = req._parsedUrl.query
   Product.findById(product_query)
     .then((result) => {
+      console.log(result)
       res.render('product_details', {
         Username: guestName,
         Amount: getProductAmount(result),
