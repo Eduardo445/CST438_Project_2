@@ -76,7 +76,7 @@ mongoose
 
 app.get('/', function (req, res) {
   activeUser(req);
-  Product.find()
+  Product.find().limit(10)
   .then((result) => {
     var movie_names = [];
     result.forEach(function (movie_name) {
@@ -96,7 +96,7 @@ app.get('/', function (req, res) {
 
 app.get('/search', function(req, res) {
   activeUser(req);
-  var search = replaceAll(req._parsedUrl.query, {'%20': ' '})
+  var search = replaceAll(req._parsedUrl.query, {'%20': ' '});
   Product.find({name: RegExp(search, 'gi') })
   .then((result) => {
     res.render('search_product', {
@@ -119,7 +119,7 @@ function replaceAll(string, mapObj) {
 
 app.get('/get_movie', function(req, res) {
   activeUser(req);
-  var product_query = req._parsedUrl.query
+  var product_query = req._parsedUrl.query;
   Product.findById(product_query)
     .then((result) => {
       res.render('product_details', {
