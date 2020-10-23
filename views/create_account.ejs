@@ -1,106 +1,101 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <%- include('./partials/head'); %>
-    <link rel='stylesheet' type='text/css' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'>
-
-</head>
-
-<%- include('./partials/nav'); %>
-
-<body class="register_body gradient">
-    <div class='container center'>
-        <br><br> <h1 class="jumbo"> Register </h1> <br><br>
-
-            <form id = "reg_form" class= "elegant-lightback container" action="/create_account" method='POST'>
-
-                <div class='form-group row'>
-                    <label for='first_name' class='col-sm-4 col-form-label'></label>
-                    <div class='col-sm-4'>
-                        <input type='text' placeholder="First Name"class='field' id='first_name' name='first_name' required>
-                    </div>
-                </div>
-
-                <div class='form-group row'></div>
-
-                <div class='form-group row'>
-                    <label for='last_name' class='col-sm-4 col-form-label'></label>
-                    <div class='col-sm-4'>
-                        <input type='text'  placeholder="Last Name"class='field' id='last_name' name='last_name' required>
-                    </div>
-                </div>
-
-                <div class='form-group row'></div>
-
-                <div class='form-group row'>
-                    <label for='username' class='col-sm-4 col-form-label'></label>
-                    <div class='col-sm-4'>
-                        <input type='text'  placeholder="Userame"class='field' id='username' name='username' required>
-                    </div>
-                    <% if(!userShort != undefined && !userShort) { %>
-                        <p style="color:red;font-size:1.2em;font-weight: bold;"> Username too short </p>
-                <% } %>
-                <% if(taken != undefined && taken) { %>
-                    <p style="color:red;font-size:1,2em;font-weight: bold;"> Username taken </p>
-            <% } %>
-                </div>
-
-                <div class='form-group row'></div>
-
-                <div class='form-group row'>
-                    <label for='password' class='col-sm-4 col-form-label'></label>
-                    <div class='col-sm-4'>
-                        <input type='password' placeholder="Password"class='field' id='password' name='password' required>
+    <head>
+        <meta charset="UTF-8">
+        <%- include('./partials/head'); %>
+    </head>
+    <%- include('./partials/nav'); %>
+    <body >
+        <div class='container center'>
+            <br><br> <h1 class="jumbo"> Register </h1> <br><br>
+                <form id = "reg_form" class= "elegant-lightback container" action="/create_account" method='POST'>
+                    <div class='form-group row'>
+                        <label for='first_name' class='col-sm-4 col-form-label'></label>
+                        <div class='col-sm-4'>
+                            <input type='text' placeholder="First Name"class='field' id='first_name' name='first_name' required>
+                        </div>
                     </div>
 
+                    <div class='form-group row'></div>
 
-                </div>
+                    <div class='form-group row'>
+                        <label for='last_name' class='col-sm-4 col-form-label'></label>
+                        <div class='col-sm-4'>
+                            <input type='text'  placeholder="Last Name"class='field' id='last_name' name='last_name' required>
+                        </div>
+                    </div>
 
-                <div class='form-group row'>
-                    <label for='last_name' class='col-sm-4 col-form-label'></label>
-                    <p style="text-align:center;color:gray;font-size:1em;font-weight: bold;"> Password must have a special chracter and number </p>
-                </div>
+                    <div class='form-group row'></div>
 
-                <div class='form-group row'>
-                    <label for='last_name' class='col-sm-4 col-form-label'></label>
-                    <% if(tooShort != undefined && tooShort) { %>
-                        <p style="color:red;font-size:1.2em;font-weight: bold;"> Password too short </p>
-                        <br>
+                    <div class='form-group row'>
+                        <label for='username' class='col-sm-4 col-form-label'></label>
+                        <div class='col-sm-4'>
+                            <input type='text'  placeholder="Username"class='field' id='username' name='username' required>
+                        </div>
+                    </div>
+
+                    <div class='form-group row'></div>
+
+                    <div class='form-group row'>
+                        <label for='password' class='col-sm-4 col-form-label'></label>
+                        <div class='col-sm-4'>
+                            <input type='password' placeholder="Password"class='field' id='password' name='password' required>
+                        </div>
+                    </div>
+
+                    <div class='form-group row'>
+                        <label for='last_name' class='col-sm-4 col-form-label'></label>
+                        <p style="text-align:center;color:white;font-size:1em;font-weight: bold;"> Password and Username must be at least 7 characters </p>
+                        <label for='last_name' class='col-sm-4 col-form-label'></label>
+                        <p style="text-align:center;color:white;font-size:1em;font-weight: bold;"> Password must have a special character and number </p>
+                    </div>
+
+                    <% if (userShort) { %>
+                        <div class='form-group row'>
+                            <label for='last_name' class='col-sm-4 col-form-label'></label>
+                            <p style="color:red;font-size:1.2em;font-weight: bold;"> Username too short </p>
+                        </div>
                     <% } %>
 
-                </div>
-
-                <div class='form-group row'>
-                    <label for='last_name' class='col-sm-4 col-form-label'></label>
-                    <% if(noSpec != undefined && noSpec) { %>
-                        <p style="color:red;font-size:1.2em;font-weight: bold;"> Password needs special character</p>
+                    <% if (taken) { %>
+                        <div class='form-group row'>
+                            <label for='last_name' class='col-sm-4 col-form-label'></label>
+                            <p style="color:red;font-size:1,2em;font-weight: bold;"> Username taken </p>
+                        </div>
                     <% } %>
 
-                </div>
-
-                <div class='form-group row'>
-                    <label for='last_name' class='col-sm-4 col-form-label'></label>
-                    <% if(noNum != undefined && noNum) { %>
-                        <p style="color:red;font-size:1.2em;font-weight: bold;"> Password needs number </p>
+                    <% if (tooShort) { %>
+                        <div class='form-group row'>
+                            <label for='last_name' class='col-sm-4 col-form-label'></label>
+                            <p style="color:red;font-size:1.2em;font-weight: bold;"> Password too short </p>
+                        </div>
                     <% } %>
-                </div>
 
-                <div class='form-group row'></div>
+                    <% if (noSpec) { %>
+                        <div class='form-group row'>
+                            <label for='last_name' class='col-sm-4 col-form-label'></label>
+                            <p style="color:red;font-size:1.2em;font-weight: bold;"> Password needs special character</p>
+                        </div>
+                    <% } %>
 
-                <div class='form-group row'>
-                    <div class='col-sm-4'></div>
-                    <div class='col-sm-4'>
-                        <button class='button'>Register</button>
+                    <% if (noNum) { %>
+                        <div class='form-group row'>
+                            <label for='last_name' class='col-sm-4 col-form-label'></label>
+                            <p style="color:red;font-size:1.2em;font-weight: bold;"> Password needs number </p>
+                        </div>
+                    <% } %>
+
+                    <div class='form-group row'></div>
+
+                    <div class='form-group row'>
+                        <div class='col-sm-4'></div>
+                        <div class='col-sm-4'>
+                            <button class='button'>Register</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-
-  <script> </script>
-  <%- include('./partials/footer'); %>
-
-</body>
+    </body>
+    <%- include('./partials/footer'); %>
 </html>

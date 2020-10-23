@@ -1,214 +1,44 @@
-body {
-    background-color: black;
+.addBtn {
+    border: 2px solid black;
+    background-color: transparent;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #4CAF50;
+    color: green;
+}
+
+.addBtn:hover {
+    background-color: #4CAF50;
     color: white;
 }
 
-h1 {
-    font-size: 4em;
-    margin-bottom: 0px;
-    font-family: 'Oswald', sans-serif;
+.subBtn {
+    border: 2px solid black;
+    background-color: transparent;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #2196F3;
+    color: dodgerblue
 }
 
-h2 {
-    font-family: 'Oswald', sans-serif;
-}
-
-header, figure, nav, footer {
-    text-align: center;
-}
-
-nav a {
-    padding: 10px;
-    padding-bottom: 3px;
-    font-size: 1.5em;
-    text-decoration: none;
+.subBtn:hover {
+    background: #2196F3;
     color: white;
 }
 
-nav a:hover {
-    border-bottom: 2px red solid;
-    font-size: 2em;
-    transition: .9s;
-    color: red;
+.deleteBtn {
+    border: 2px solid black;
+    background-color: transparent;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    border-color: #f44336;
+    color: red
 }
 
-footer {
-    font-size: .75em;
+.deleteBtn:hover {
+    background: #f44336;
     color: white;
-    
 }
-
-#malware {
-    margin-left: auto;
-    margin-right: auto;
-    width: 30em;
-}
-
-#adware {
-    margin-left: auto;
-    margin-right: auto;
-    width: 30em;
-}
-
-#ransom {
-    margin-left: auto;
-    margin-right: auto;
-    width: 30em;
-}
-
-#newsOne {
-    margin-left: auto;
-    margin-right: auto;
-    width: 30em;
-}
-
-#newsTwo {
-    margin-left: auto;
-    margin-right: auto;
-    width: 30em;
-}
-
-img {
-    border-bottom-left-radius: 50px;
-    border-bottom-right-radius: 50px;
-    border-top-left-radius: 50px;
-    border-top-right-radius: 50px;
-}
-
-#first {
-    outline-width: .5vw;
-    outline-style: inset;
-    outline-color: green;
-    border: 1vw solid red;
-}
-
-#second {
-    outline-width: .5vw;
-    outline-style: groove;
-    outline-color: cyan;
-    border: 1vw solid orange;
-}
-
-#third {
-    outline-width: .5vw;
-    outline-style: dashed;
-    outline-color: purple;
-    border: 1vw solid yellow;
-}
-
-#fourth {
-    outline-width: .5vw;
-    outline-style: ridge;
-    outline-color: gold;
-    border: 1vw solid silver;
-}
-
-#fifth {
-    outline-width: .5vw;
-    outline-style: dotted;
-    outline-color: lightyellow;
-    border: 1vw solid purple;
-}
-
-ul {
-    color: red;
-}
-
-#fakerPerson {
-    display: flex;
-    justify-content: center;
-    font-family: 'Fantasy', fantasy;
-    font-size: 2ex;
-}
-
-#wanted {
-    text-align: center;
-    font-family: 'Oswald', sans-serif;
-}
-
-#disclaimer {
-    text-align: center;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.75ex;
-}
-
-.register_body {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: url("/img/purple_mountain.jpg");
-}
-.cool {
-    text-align: center;
-    color: white;
-    text-transform: uppercase;
-    text-decoration: none;
-    font-family: sans-serif;
-    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
-    background-size: 400%;
-    border-radius: 30px;
-  }
-  
-  .cool:hover {
-    animation: animate 8s linear infinite;
-  }
-  
-  @keyframes animate {
-    0% {
-      background-position: 0%;
-    }
-    100% {
-      background-position: 400%;
-    }
-  }
-  
-  .cool:before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    z-index: -1;
-    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
-    background-size: 400%;
-    border-radius: 40px;
-    opacity: 0;
-    transition: 0.5s;
-  }
-  
-  .cool:hover:before {
-    filter: blur(20px);
-    opacity: 1;
-    animation: animate 8s linear infinite;
-  }
-  .elegant-lightback {
-    color: white;
-    background: rgba(0, 0, 0, .65);
-    background-size: 400%;
-    border-radius: 10px;
-    padding: 70px;
-    transition: 1s;
-  }
-  
-  .elegant-lightback:hover {
-    color: white;
-    background: rgba(0, 0, 0, .35);
-    background-size: 400%;
-    border-radius: 10px;
-    padding: 70px;
-    transition: 1s;
-  }
-  .center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-  }
-
-  .monospace {
-    font-family: "Lucida Console", Courier, monospace;
-    font-size: 80px;
-    text-align: center;
-  }

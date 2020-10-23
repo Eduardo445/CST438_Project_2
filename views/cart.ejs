@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <%- include('./partials/head'); %>
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
     <script>
       $(document).ready(function () {
         $(".deleteBtn").on("click", function () {
@@ -18,7 +19,7 @@
               if (!result.check) {
                 alert("Unable to delete from cart!");
               } else {
-                location.reload();
+                window.location.reload();
               }
             }
           }); // ajax
@@ -38,7 +39,7 @@
               if (!result) {
                 alert("Unable to add to cart!  You have reached our stock limit!");
               } else {
-                location.reload();
+                window.location.reload();
               }
             }
           }); // ajax
@@ -58,7 +59,7 @@
               if (!result) {
                 alert("Unable to subtract from cart!");
               } else {
-                location.reload();
+                window.location.reload();
               }
             }
           }); // ajax
@@ -86,7 +87,6 @@
           <% } else if (Changes[i].reason == "Stock") { %>
             <%= Changes[i].name  %> quantity has change in cart to match our stock.
           <% } %>
-
 
         <% } %>
       </div>
@@ -124,7 +124,9 @@
             <td>
               <input type="hidden" name="id" class="id" value="<%= Items[i].id %>">
               <button type="button" class="addBtn">Add</button>
+              <br><br>
               <button type="button" class="subBtn">Sub</button>
+              <br><br>
               <button type="button" class="deleteBtn">Delete</button>
             </td>
           </tr>
@@ -137,6 +139,13 @@
         <h3 class='display-4'>Subtotal:&nbsp;$<%= Subtotal %></h3>
       </div>
     </div>
+    <% if (Items.length != 0) { %>
+      <form class= "elegant-lightback container" action="/cart/purchase" method='POST'>
+        <div class='row justify-content-center' style="margin-top: 2em; margin-left: 1em;">
+          <button type="submit" class="btn btn-outline-success btn-lg">Purchase</button>
+        </div>
+      </form>
+    <% } %>  
   </body>
   <%- include('./partials/footer'); %>
 </html>
