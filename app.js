@@ -20,7 +20,7 @@ app.use(methodOverride('_method'));
 
 // Express-Session
 var session = require('express-session');
-app.use(session({ 
+app.use(session({
   secret: "Crazy Green",
   rolling: true,
   saveUninitialized: false,
@@ -31,7 +31,7 @@ app.use(session({
 }));
 
 // Avoid deprecated warning for findByIdAndUpdate()
-mongoose.set('useFindAndModify', false); 
+mongoose.set('useFindAndModify', false);
 
 // Models from our Database
 const Customer = require('./models/customer');
@@ -253,7 +253,7 @@ app.post('/check', async function(req, res) {
       for (let i = 0; i < (result.item).length; i++) {
         await Product.findById(result.item[i].id)
         .exec()
-        .then((prod) => { 
+        .then((prod) => {
           if (prod == null) {
             inventoryChanges.push({
               name: (result.item)[i].name,
@@ -301,6 +301,7 @@ app.post('/check', async function(req, res) {
 }); // Login checking process and Cart check
 
 app.get("/logout", function(req, res){
+  localStorage.clear()
   if (currentUser != "") {
     currentUser = "";
     cartItems = [];
@@ -472,10 +473,10 @@ app.post('/addCart', (req, res) => {
   const id = currentUser;
   if (id != "") {
     updateCart(
-      req.body.movieID, 
-      req.body.movieName, 
-      req.body.moviePoster, 
-      parseInt(req.body.moviePrice), 
+      req.body.movieID,
+      req.body.movieName,
+      req.body.moviePoster,
+      parseInt(req.body.moviePrice),
       parseInt(req.body.quantity),
       parseInt(req.body.movieStock)
     );
@@ -493,13 +494,13 @@ function updateCart(id, name, poster, price, quantity, stock) {
     updateDBCart();
   } else {
     subTotal += price * quantity;
-    newItem = { 
-      id: id, 
-      name: name, 
-      poster: poster, 
-      price: price, 
-      amount: quantity, 
-      stock: stock 
+    newItem = {
+      id: id,
+      name: name,
+      poster: poster,
+      price: price,
+      amount: quantity,
+      stock: stock
     };
     cartItems.push(newItem);
 
@@ -628,8 +629,104 @@ app.get('/cart', async (req, res) => {
         });
       });
     }
-    
+
   } else {
     res.redirect('/');
   }
 }); // Cart page
+
+app.get('/stock', (req, res) => {
+  activeUser(req)
+  Product.find().then((result) => {
+    res.render('stock', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+});
+
+
+app.get('/stock/add', (req, res) => {
+  activeUser(req)
+  res.render('add_product', {
+    Username: guestName
+  })
+})
+
+app.post('/stock/add', (req, res) => {
+  console.log('post method: add')
+  const new_product = new Product({
+    name: req.body.title,
+    categories: req.body.categories,
+    price: req.body.price,
+    release: req.body.release,
+    stock: req.body.stock,
+    poster: req.body.poster,
+    description: req.body.description,
+    summary: req.body.summary
+  })
+  new_product.save().then((result) => {
+    console.log(result)
+    res.send({ 'check': true })
+  }).catch((error) => {
+    console.log(error)
+  })
+})
+
+
+app.get('/stock/edit', (req, res) => {
+  activeUser(req)
+  var query = req._parsedUrl.query
+  Product.find({ _id: query}).then((result) => {
+    res.render('edit_product', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+});
+
+app.post('/stock/edit', (req, res) => {
+  console.log('post method: edit')
+  Product.findByIdAndUpdate(req.body.id, {
+    name: req.body.title,
+    price: req.body.price,
+    release: req.body.release,
+    stock: req.body.stock,
+    poster: req.body.poster,
+    description: req.body.description,
+    summary: req.body.summary
+  }).then((result) => {
+    res.send({ "check": true });
+  })
+
+})
+
+app.get('/stock/delete', (req, res) => {
+  activeUser(req)
+  var query = req._parsedUrl.query
+  Product.find({ _id: query}).then((result) => {
+    res.render('delete_product', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+})
+
+app.delete('/stock/delete', (req, res) => {
+  console.log('deleting...')
+  Product.findByIdAndDelete(req.body.movie_id).then((result) => {
+    res.send({ 'check': true })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+})

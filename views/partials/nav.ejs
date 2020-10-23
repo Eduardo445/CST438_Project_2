@@ -42,6 +42,9 @@
         </a>
         <% if (Username != "Guest") { %>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <% if (Username == 'Test') { %>
+            <a class="dropdown-item" href="/stock">Stock</a>
+            <% } %>
             <a class="dropdown-item" href="/profile">Edit Profile</a>
             <a class="dropdown-item" href="/cart">View Shopping Cart</a>
             <a class="dropdown-item" href="/logout">Logout</a>

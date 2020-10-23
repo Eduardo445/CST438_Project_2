@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <%- include('./partials/head'); %>
+    </head>
+    <%- include('./partials/nav'); %>
+    <div id='title' class="container" style="margin-top: 3em;">
+        <div class="row justify-content-center">
+          <h1 class="display-4">Are you sure you want to delete?<h1>
+        </div>
+    </div>
+    <div class="row justify-content-center" style="margin-top: 1em;">
+       <h3 class="display-6"><%= Movie[0].name %></h3>
+    </div>
+
+    <div class="row justify-content-center" style="margin-top: 1em;">
+        <img src="../<%= Movie[0].poster %>"/>
+    </div>
+
+    <div class="row justify-content-center" style="margin-top: 3em;">
+        <button id="cancel"class="btn btn-outline-warning" style="margin-right: 1em;">
+            Cancel
+        </button>
+        <button id="delete" class="btn btn-outline-danger">
+            Delete Movie
+        </button>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#cancel').click(function() {
+                window.location.href = '/stock'
+            })
+
+            $('#delete').click(function() {
+                console.log('DELETEEEE')
+                $.ajax({
+                    method: 'delete',
+                    url: '/stock/delete',
+                    dataType: 'json',
+                    data: {
+                        movie_id: '<%= Movie[0]._id %>'
+                    },
+                    success: function(data, status) {
+                        location.href = ('/stock')
+                    },
+                    error: function(xhr, status, error) {
+
+                    },
+                    complete: function(data, status) {
+
+                    }
+                })
+            })
+
+
+        })
+    </script>
+    <%- include('./partials/footer'); %>
+</html>
