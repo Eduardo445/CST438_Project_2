@@ -96,6 +96,9 @@ app.get('/', function (req, res) {
 
 app.get('/search', function(req, res) {
   activeUser(req);
+  if(req._parsedUrl.query == null) {
+    var search = ' '
+  }
   var search = replaceAll(req._parsedUrl.query, {'%20': ' '});
   Product.find({name: RegExp(search, 'gi') })
   .then((result) => {
