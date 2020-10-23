@@ -98,22 +98,28 @@ app.get('/search', function(req, res) {
   activeUser(req);
   var search = req._parsedUrl.query
 
-  if(req._parsedUrl.query === null) {
-    console.log('null')
-    var search = ' '
-  }
-  var search = replaceAll(req._parsedUrl.query, {'%20': ' '});
-  Product.find({name: RegExp(search, 'gi') })
-  .then((result) => {
-    res.render('search_product', {
-      Username: guestName,
-      Search: search,
-      Movie: result
+  if(search == 'all') {
+    Product.find().then((result => {
+      res.render('search_product', {
+        Username: guestName,
+        Search: search,
+        Movie: result
+      });
+    }))
+  } else {
+    search = replaceAll(req._parsedUrl.query, {'%20': ' '});
+    Product.find({name: RegExp(search, 'gi') })
+    .then((result) => {
+      res.render('search_product', {
+        Username: guestName,
+        Search: search,
+        Movie: result
+      });
+    })
+    .catch((error) => {
+      console.log(error);
     });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+  }
 }); // Search for movies based on search bar input
 
 function replaceAll(string, mapObj) {
