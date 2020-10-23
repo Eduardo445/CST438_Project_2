@@ -238,6 +238,8 @@ app.post('/check', async function(req, res) {
       currentUser = result.id;
       guestName = result.username;
       req.session.authenticated = true;
+    } else {
+      res.send(false);
     }
     return result;
   }).then((result) => {
@@ -313,20 +315,49 @@ app.get("/logout", function(req, res){
 app.get('/create_account', function (req, res) {
   activeUser(req);
   res.render('create_account', {
+
     Username: guestName,
-    taken: false
+    taken: false,
+    taken: false,
+    tooShort: false,
+    noSpec: false,
+    noNum: false,
+    userShort: true,
+
   });
 }); //create account page
 
 app.post('/create_account', function (req, res) {
   activeUser(req);
+  var tooShort = false;
+  var noSpec = false;
+  var noNum = false;
+  var userShort = false;
+  var taken = false;
+
+  
   user = req.body.username;
   password = req.body.password;
   var first_name = req.body.first_name;
   var last_name = req.body.last_name;
+
+  if(!(/\d/.test(password))){
+    noNum = true;
+  }
+  if(password.length < 6){
+    tooShort = true;
+  }
+  if((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password))){
+    noSpec = true;
+  }
+  if(user.length < 6 ){
+    userShort = true;
+    console.log("user too short");
+  }
+
   Customer.findOne({ username: req.body.username })
     .then((result) => {
-      if(result == null){
+      if(result == null && !noSpec && !noNum && !tooShort && !userShort){
         var newcust = new Customer();
         newcust.username = user;
         newcust.password = password;
@@ -343,12 +374,32 @@ app.post('/create_account', function (req, res) {
         });
         res.redirect('/login');
       }
-      else if (user == result.username){
+      else if(userShort){
         res.render('create_account', {
-            Username: 'guest',
-            taken: true
-          });
+          Username: 'guest',
+          taken: taken,
+          tooShort: tooShort,
+          noSpec: noSpec,
+          noNum: noNum,
+          userShort: userShort
+        });
+
       }
+          else { 
+            if (user == result.username){
+              taken = true;
+            }
+            res.render('create_account', {
+              Username: 'guest',
+              taken: taken,
+              tooShort: tooShort,
+              noSpec: noSpec,
+              noNum: noNum,
+              userShort: userShort
+            });
+        }
+      
+      
     })
     .catch((err) => {
       console.log(err);
