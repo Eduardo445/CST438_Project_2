@@ -96,7 +96,10 @@ app.get('/', function (req, res) {
 
 app.get('/search', function(req, res) {
   activeUser(req);
-  if(req._parsedUrl.query == null) {
+  var search = req._parsedUrl.query
+
+  if(req._parsedUrl.query === null) {
+    console.log('null')
     var search = ' '
   }
   var search = replaceAll(req._parsedUrl.query, {'%20': ' '});

@@ -67,6 +67,10 @@
       $('#submit').click(function(e) {
         e.preventDefault()
         var term = $('#search').val()
+        if(term == '') {
+          console.log('empty string')
+          term = ' '
+        }
         window.location.href="search?" + term
       })
     </script>
