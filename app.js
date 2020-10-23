@@ -382,7 +382,7 @@ app.put('/profile/update/:id', async (req, res) => {
             UserInfo: info,
             Unique: true
           });
-        } else if (guestName == result.username) {
+        } else if (guestName == result.username && result.username == req.body.user) {
           await Customer.findByIdAndUpdate(currentUser, {
             firstName: req.body.first,
             lastName: req.body.last,
@@ -405,6 +405,12 @@ app.put('/profile/update/:id', async (req, res) => {
           .then((result) => {
             guestName = result.username;
             res.redirect('/profile');
+          });
+        } else {
+          res.render("update_profile", {
+            Username: guestName,
+            UserInfo: info,
+            Unique: true
           });
         }
       } else {
