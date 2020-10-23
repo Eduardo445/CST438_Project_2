@@ -629,7 +629,6 @@ app.post('/stock/add', (req, res) => {
 app.get('/stock/edit', (req, res) => {
   activeUser(req)
   var query = req._parsedUrl.query
-
   Product.find({ _id: query}).then((result) => {
     res.render('edit_product', {
       Username: guestName,
@@ -652,13 +651,31 @@ app.post('/stock/edit', (req, res) => {
     description: req.body.description,
     summary: req.body.summary
   }).then((result) => {
-    console.log(result)
     res.send({ "check": true });
   })
 
 })
 
 app.get('/stock/delete', (req, res) => {
-  res.send('implementing delete')
+  activeUser(req)
+  var query = req._parsedUrl.query
+  Product.find({ _id: query}).then((result) => {
+    res.render('delete_product', {
+      Username: guestName,
+      Movie: result
+    })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
+})
 
+app.delete('/stock/delete', (req, res) => {
+  console.log('deleting...')
+  Product.findByIdAndDelete(req.body.movie_id).then((result) => {
+    res.send({ 'check': true })
+  })
+  .catch((error) => {
+    console.log(error)
+  })
 })
