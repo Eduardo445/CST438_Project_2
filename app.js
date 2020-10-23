@@ -42,10 +42,11 @@ const Cart = require('./models/cart');
 let currentUser = "";
 let guestName = 'Guest';
 
-// Track the user's cart and subtotal
+// Track the user's cart, subtotal, and purchase
 let cartItems = [];
 let inventoryChanges = [];
 let subTotal = 0;
+let transaction = false;
 
 // Connect to mongodb
 const uri = 'mongodb+srv://Esoto1290:CSTwebstore1900@cst438.vwxeq.mongodb.net/WebStore?retryWrites=true&w=majority';
@@ -58,88 +59,6 @@ mongoose
     })
   )
   .catch((err) => console.log(err));
-
-// Start of our Routes
-app.get('/add-customer', (req, res) => {
-  const customer = new Customer({
-    firstName: 'Eduardos',
-    lastName: 'Soto',
-    username: 'f',
-    password: 'f',
-    totalSpent: 0
-  });
-
-  customer
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get('/addMovies', (req, res) => {
-  const product = new Product({
-    name: "Parasite",
-    price: "20.00",
-    release: "2019-05-30",
-    categories: ["Comedy", "Drama", "Thriller"],
-    stock: 20,
-    poster: "img/parasite.jpg",
-    description: "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident.",
-    summary: "All unemployed, Ki-taek's family takes peculiar...",
-});
-
-  product
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get('/customer-firstname', (req, res) => {
-  Customer.findOne({ firstName: 'Eduardo' })
-    .then((result) => {
-      res.send(result);
-      currentUser = result;
-      console.log(currentUser.firstName);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-// This is an example of how to add a new field to the db with a value
-// If you do, make sure to update the schema first in the models folder
-
-// Ex. This customer did not have totalSpent. Eduardo added to the schema first.
-// Then used this command to add the new field to the db witht he new value.
-app.get('/new-field', function (req, res) {
-  Customer.updateOne(
-    { firstName: 'Eduardos' },
-    { $set: { totalSpent: '15.00' } }
-  )
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
-
-app.get('/update-customer', function (req, res) {
-  Customer.updateOne({ firstName: 'Eduardo' }, { totalSpent: '12.55' })
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
 
 /**
  * Anything Below this comment is a working route page.
@@ -226,11 +145,13 @@ app.get('/login', function (req, res) {
   activeUser(req);
   res.render('login', {
     Username: guestName,
+    Credentials: false
   });
 }); // Login Page
 
 app.post('/check', async function(req, res) {
   activeUser(req);
+  let pass = true;
   await Customer.findOne({ username: req.body.username, password: req.body.password })
   .exec()
   .then((result) => {
@@ -239,7 +160,11 @@ app.post('/check', async function(req, res) {
       guestName = result.username;
       req.session.authenticated = true;
     } else {
-      res.send(false);
+      pass = false;
+      res.render('login', {
+        Username: guestName,
+        Credentials: true
+      });
     }
     return result;
   }).then((result) => {
@@ -292,8 +217,10 @@ app.post('/check', async function(req, res) {
     .exec()
     .then((result) => {
       // Nothing needs to happen
+      if (pass) {
+        res.redirect('/')
+      }
     });
-    res.send({ "check": true });
   })
   .catch((error) => {
     console.log(error);
@@ -301,7 +228,6 @@ app.post('/check', async function(req, res) {
 }); // Login checking process and Cart check
 
 app.get("/logout", function(req, res){
-  localStorage.clear()
   if (currentUser != "") {
     currentUser = "";
     cartItems = [];
@@ -315,15 +241,13 @@ app.get("/logout", function(req, res){
 app.get('/create_account', function (req, res) {
   activeUser(req);
   res.render('create_account', {
-
     Username: guestName,
     taken: false,
     taken: false,
     tooShort: false,
     noSpec: false,
     noNum: false,
-    userShort: true,
-
+    userShort: false,
   });
 }); //create account page
 
@@ -335,29 +259,27 @@ app.post('/create_account', function (req, res) {
   var userShort = false;
   var taken = false;
 
-  
   user = req.body.username;
   password = req.body.password;
   var first_name = req.body.first_name;
   var last_name = req.body.last_name;
 
-  if(!(/\d/.test(password))){
+  if (!(/\d/.test(password))) {
     noNum = true;
   }
-  if(password.length < 6){
+  if (password.length < 6) {
     tooShort = true;
   }
-  if((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password))){
+  if ((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password))) {
     noSpec = true;
   }
-  if(user.length < 6 ){
+  if (user.length < 6 ) {
     userShort = true;
-    console.log("user too short");
   }
 
   Customer.findOne({ username: req.body.username })
     .then((result) => {
-      if(result == null && !noSpec && !noNum && !tooShort && !userShort){
+      if (result == null && !noSpec && !noNum && !tooShort && !userShort) {
         var newcust = new Customer();
         newcust.username = user;
         newcust.password = password;
@@ -366,45 +288,38 @@ app.post('/create_account', function (req, res) {
         newcust.totalSpent = 0;
 
         newcust.save(function(error, savedUder){
-          if(error) {
+          if (error) {
             console.log(error);
             return res.status(500).send();
           }
-          console.log("user added successfully")
         });
         res.redirect('/login');
-      }
-      else if(userShort){
+      } else if (userShort) {
         res.render('create_account', {
-          Username: 'guest',
+          Username: guestName,
           taken: taken,
           tooShort: tooShort,
           noSpec: noSpec,
           noNum: noNum,
           userShort: userShort
         });
-
-      }
-          else { 
-            if (user == result.username){
-              taken = true;
-            }
-            res.render('create_account', {
-              Username: 'guest',
-              taken: taken,
-              tooShort: tooShort,
-              noSpec: noSpec,
-              noNum: noNum,
-              userShort: userShort
-            });
+      } else {
+        if (user == result.username) {
+          taken = true;
         }
-      
-      
+        res.render('create_account', {
+          Username: guestName,
+          taken: taken,
+          tooShort: tooShort,
+          noSpec: noSpec,
+          noNum: noNum,
+          userShort: userShort
+        });
+      }
     })
     .catch((err) => {
       console.log(err);
     });
-
 }); //create account page logic
 
 app.get('/profile', function (req, res) {
@@ -434,7 +349,8 @@ app.get('/profile/update/:id', function (req, res) {
     .then((result) => {
       res.render("update_profile", {
         Username: guestName,
-        UserInfo: result
+        UserInfo: result,
+        Unique: false
       });
     })
     .catch((err) => {
@@ -445,20 +361,59 @@ app.get('/profile/update/:id', function (req, res) {
   }
 }); // Update User's Profile Page
 
-
-// TODO: Username and Password check
-app.put('/profile/update/:id', (req, res) => {
+app.put('/profile/update/:id', async (req, res) => {
   activeUser(req);
   const id = currentUser;
+  let info = {
+    _id: currentUser,
+    firstName: req.body.first,
+    lastName: req.body.last,
+    username: req.body.user,
+    password: req.body.pass
+  };
   if (id != "") {
-    Customer.findByIdAndUpdate(currentUser, {
-      firstName: req.body.first,
-      lastName: req.body.last,
-      username: req.body.user,
-      password: req.body.pass
-    })
-    .then((result) => {
-      res.redirect('/profile');
+    await Customer.findById(currentUser)
+    .exec()
+    .then(async (result) => {
+      if (result != null) {
+        if ((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(req.body.pass)) || (req.body.pass).length < 6 || !(/\d/.test(req.body.pass))) {
+          res.render("update_profile", {
+            Username: guestName,
+            UserInfo: info,
+            Unique: true
+          });
+        } else if (guestName == result.username) {
+          await Customer.findByIdAndUpdate(currentUser, {
+            firstName: req.body.first,
+            lastName: req.body.last,
+            username: req.body.user,
+            password: req.body.pass
+          })
+          .exec()
+          .then((result) => {
+            guestName = result.username;
+            res.redirect('/profile');
+          });
+        } else if (result.name != req.body.user && (req.body.user).length > 6) {
+          await Customer.findByIdAndUpdate(currentUser, {
+            firstName: req.body.first,
+            lastName: req.body.last,
+            username: req.body.user,
+            password: req.body.pass
+          })
+          .exec()
+          .then((result) => {
+            guestName = result.username;
+            res.redirect('/profile');
+          });
+        }
+      } else {
+        res.render("update_profile", {
+          Username: guestName,
+          UserInfo: info,
+          Unique: true
+        });
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -516,7 +471,6 @@ function updateCart(id, name, poster, price, quantity, stock) {
         })
         .save()
         .then((result) => {
-          console.log("Created new cart for" + guestName);
           // Nothing needs to happen
         })
         .catch((error) => {
@@ -635,29 +589,93 @@ app.get('/cart', async (req, res) => {
   }
 }); // Cart page
 
+app.post('/cart/purchase', async (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "") {
+    for (let i = 0; i < cartItems.length; i++) {
+      await Product.findByIdAndUpdate(cartItems[i].id, {
+        stock: cartItems[i].stock - cartItems[i].amount
+      })
+      .exec()
+      .then((result) => {
+        // Nothing needs to happen
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+    await Customer.findById(id)
+    .exec()
+    .then(async (result) => {
+      await Customer.findByIdAndUpdate(currentUser, {
+        $inc: { totalSpent: subTotal }
+      })
+      .exec()
+      .then(async (result) => {
+        cartItems = [];
+        inventoryChanges = [];
+        subTotal = 0;
+        await Cart.findOneAndUpdate({ user: currentUser }, {
+          item: cartItems,
+          notice: inventoryChanges
+        })
+        .exec()
+        .then((result) => {
+          transaction = true;
+          res.redirect('/purchase/completed');
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  } else {
+    res.redirect('/');
+  }
+}); // Handles the purchase logic
+
+app.get('/purchase/completed', (req, res) => {
+  activeUser(req);
+  const id = currentUser;
+  if (id != "" || transaction) {
+    transaction = false;
+    res.render("complete", {
+      Username: guestName
+    });
+  } else {
+    res.redirect('/');
+  }
+});
+
 app.get('/stock', (req, res) => {
-  activeUser(req)
+  activeUser(req);
   Product.find().then((result) => {
     res.render('stock', {
       Username: guestName,
       Movie: result
-    })
+    });
   })
   .catch((error) => {
     console.log(error)
-  })
-});
-
+  });
+}); // Stock page
 
 app.get('/stock/add', (req, res) => {
-  activeUser(req)
+  activeUser(req);
   res.render('add_product', {
     Username: guestName
-  })
-})
+  });
+}); // Stock add page
 
 app.post('/stock/add', (req, res) => {
-  console.log('post method: add')
+  activeUser(req);
   const new_product = new Product({
     name: req.body.title,
     categories: req.body.categories,
@@ -667,18 +685,16 @@ app.post('/stock/add', (req, res) => {
     poster: req.body.poster,
     description: req.body.description,
     summary: req.body.summary
-  })
+  });
   new_product.save().then((result) => {
-    console.log(result)
-    res.send({ 'check': true })
+    res.send({ 'check': true });
   }).catch((error) => {
     console.log(error)
-  })
-})
-
+  });
+}); // Stock add page logic
 
 app.get('/stock/edit', (req, res) => {
-  activeUser(req)
+  activeUser(req);
   var query = req._parsedUrl.query
   Product.find({ _id: query}).then((result) => {
     res.render('edit_product', {
@@ -689,10 +705,10 @@ app.get('/stock/edit', (req, res) => {
   .catch((error) => {
     console.log(error)
   })
-});
+}); // Stock edit page
 
 app.post('/stock/edit', (req, res) => {
-  console.log('post method: edit')
+  activeUser(req);
   Product.findByIdAndUpdate(req.body.id, {
     name: req.body.title,
     price: req.body.price,
@@ -703,30 +719,29 @@ app.post('/stock/edit', (req, res) => {
     summary: req.body.summary
   }).then((result) => {
     res.send({ "check": true });
-  })
-
-})
+  });
+}); // Stock edit page logic
 
 app.get('/stock/delete', (req, res) => {
-  activeUser(req)
-  var query = req._parsedUrl.query
+  activeUser(req);
+  var query = req._parsedUrl.query;
   Product.find({ _id: query}).then((result) => {
     res.render('delete_product', {
       Username: guestName,
       Movie: result
-    })
+    });
   })
   .catch((error) => {
     console.log(error)
-  })
-})
+  });
+}); // Stock delete page
 
 app.delete('/stock/delete', (req, res) => {
-  console.log('deleting...')
+  activeUser(req);
   Product.findByIdAndDelete(req.body.movie_id).then((result) => {
-    res.send({ 'check': true })
+    res.send({ 'check': true });
   })
   .catch((error) => {
-    console.log(error)
-  })
-})
+    console.log(error);
+  });
+}); // Stock delete page logic

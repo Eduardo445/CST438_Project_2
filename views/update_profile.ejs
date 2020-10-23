@@ -13,7 +13,7 @@
       <hr class="my-4" />
     </div>
     <section class="user-info info-card info">
-      <form action="/profile/update/<%= UserInfo._id %>?_method=PUT" , method="POST">
+      <form action="/profile/update/<%= UserInfo._id %>?_method=PUT" method="POST">
         <input type="hidden" name="_METHOD" value="PUT">
         <div class="userinfo">
           <div class="row justify-content-center">
@@ -43,9 +43,18 @@
           </div>
         </div>
         <br>
+        <% if (Unique) { %>
+          <div class='form-group row'>
+              <div class='col-sm-4'></div>
+              <div class='col-sm-4'>
+                  <p style="color:red; text-align: center; font-size:1.2em; font-weight: bold;"> Invalid Username and/or Password </p>
+              </div>
+          </div>
+        <% } %>
+        <br>
         <div class="userinfo">
           <div class="row justify-content-center">
-            <button style="width: 25%; border-radius:30px;" class="">Submit</button>
+            <button style="width: 25%; border-radius:30px;">Submit</button>
           </div>
         </div>
       </form>

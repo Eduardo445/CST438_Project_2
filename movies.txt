@@ -1,3 +1,5 @@
+// Sample movie product information
+
 const product = new Product({
     name: "The Dark Knight",
     price: "20.00",
