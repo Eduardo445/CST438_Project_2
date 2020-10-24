@@ -390,7 +390,7 @@ app.put('/profile/update/:id', async (req, res) => {
     .exec()
     .then(async (result) => {
       if (result != null) {
-        if ((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(req.body.pass)) || (req.body.pass).length < 6 || !(/\d/.test(req.body.pass))) {
+        if ((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(req.body.pass)) || (req.body.pass).length <= 6 || !(/\d/.test(req.body.pass))) {
           res.render("update_profile", {
             Username: guestName,
             UserInfo: info,
