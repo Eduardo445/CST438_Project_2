@@ -279,7 +279,7 @@ app.post('/create_account', function (req, res) {
   if (!(/\d/.test(password))) {
     noNum = true;
   }
-  if (password.length < 6) {
+  if (password.length <= 6) {
     tooShort = true;
   }
   if ((!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password))) {
@@ -316,8 +316,10 @@ app.post('/create_account', function (req, res) {
           userShort: userShort
         });
       } else {
-        if (user == result.username) {
-          taken = true;
+        if (null != result) {
+          if (user == result.username) {
+            taken = true;
+          }  
         }
         res.render('create_account', {
           Username: guestName,
