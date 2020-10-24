@@ -206,7 +206,7 @@ Here's a walkthrough of implemented features (CSUMB ONLY ACCESS):
 Database: Free tier MongoDB <br />
 Deployment: Heroku <br />
 Codebase: Github <br />
-Written: Node.js <br />
+Environment: Node.js <br />
 
 Here is a list of npm packages used in our project:
 - [x] express
